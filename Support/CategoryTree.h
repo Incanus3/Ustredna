@@ -15,7 +15,14 @@ class CategoryTree
         _root = new Category<T>(rootCategoryName);
     }
 
-    void print(QTextStream& stream = cout, unsigned short tabs = 0);
+    void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 };
+
+template<class T>
+void CategoryTree<T>::print(QTextStream& stream,
+                            unsigned short tabs) const
+{
+    _root->print(stream, tabs);
+}
 
 #endif // CATEGORYTREE_H

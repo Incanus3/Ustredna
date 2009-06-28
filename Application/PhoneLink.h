@@ -13,12 +13,14 @@ struct PhoneLink
 	PhoneLink(QString department, QString name,
 				unsigned short phone1,
 				unsigned short cell1,
-				unsigned short phone2,
-				unsigned short cell2);
+                unsigned short phone2 = 0,
+                unsigned short cell2 = 0);
 
-    void print(QTextStream& stream = cout, unsigned short tabs = 0);
+    operator QString() const;
 
-    bool operator== (PhoneLink& link)
+    void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+
+    bool operator== (PhoneLink& link) const
     {
         return this->department == link.department;
     }

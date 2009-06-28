@@ -3,8 +3,8 @@
 PhoneLink::PhoneLink(QString department, QString name,
 						unsigned short phone1,
 						unsigned short cell1,
-						unsigned short phone2 = 0,
-						unsigned short cell2 = 0)
+                        unsigned short phone2,
+                        unsigned short cell2)
 	{
 		this->department = department;
 		this->name = name;
@@ -14,10 +14,16 @@ PhoneLink::PhoneLink(QString department, QString name,
 		this->cell2 = cell2;
 	}
 
-void PhoneLink::print(QTextStream& stream, unsigned short tabs)
+void PhoneLink::print(QTextStream& stream, unsigned short tabs) const
 {
     for(int i = 0; i < tabs; i++)
         stream << "\t";
-    stream << department << " | " << name << " | " << phone1 << " | "
-            << cell1 << endl;
+    stream << *this << endl;
+}
+
+PhoneLink::operator QString() const
+{
+    QString separator = " | ";
+    return QString("%1%2%3%2%4%2%5").arg(department).arg(separator)
+            .arg(name).arg(phone1).arg(cell1);
 }
