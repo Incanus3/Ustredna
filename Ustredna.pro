@@ -17,7 +17,8 @@ HEADERS += Application/PhoneLink.h \
     GUI/mainwindow.h \
     Support/Category.h \
     Support/CategoryTree.h \
-    Support/Cout.h
+    Support/Cout.h \
+    Support/Exceptions.h
 FORMS += GUI/mainwindow.ui
 SOURCES += main.cpp \
     Application/PhoneLink.cpp \

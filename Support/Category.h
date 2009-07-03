@@ -4,6 +4,7 @@
 #include <QString>
 #include <QList>
 #include "Cout.h"
+#include "Exceptions.h"
 
 template<class T>
 class Category
@@ -21,14 +22,14 @@ class Category
 	QList<T> dataFiles() const;
 
 	void addSubCategory(Category<T>& subCat);
-	void removeSubCategory(Category<T>& subCat);
+	void removeSubCategory(Category<T>& subCat) throw(ObjectNotFound);
 
 	void addDataFile(T& data);
-	void removeDataFile(T& data);
+	void removeDataFile(T& data) throw(ObjectNotFound);
 
-	Category& findSubCategory(Category& cat);
-	Category& findSubCategory(QString name);
-	T& findDataFile(T& file);
+	Category& findSubCategory(Category& cat) throw(ObjectNotFound);
+	Category& findSubCategory(QString name) throw(ObjectNotFound);
+	T& findDataFile(T& file) throw(ObjectNotFound);
 
 	bool operator== (Category cat) const;
 
@@ -68,6 +69,7 @@ inline void Category<T>::addSubCategory(Category<T>& subCat)
 
 template<class T>
 inline void Category<T>::removeSubCategory(Category<T>& subCat)
+	 throw(ObjectNotFound)
 {
 	_subCategories.removeAll(subCat);
 }
@@ -80,24 +82,31 @@ inline void Category<T>::addDataFile(T& data)
 
 template<class T>
 inline void Category<T>::removeDataFile(T& data)
+	 throw(ObjectNotFound)
 {
 	_dataFiles.removeAll(data);
 }
 
 template<class T>
 inline Category<T>& Category<T>::findSubCategory(Category& cat)
+	throw(ObjectNotFound)
 {
+	int index = _subCategories.indexOf(cat);
+	if(index == -1)
+		throw new ObjectNotFound(QString("Category %1 not found")
+								 .arg(cat.name()));
 	return _subCategories[_subCategories.indexOf(cat)];
 }
 
 template<class T>
 inline Category<T>& Category<T>::findSubCategory(QString name)
+	 throw(ObjectNotFound)
 {
 	return findSubCategory(*(new Category(name)));
 }
 
 template<class T>
-inline T& Category<T>::findDataFile(T& file)
+inline T& Category<T>::findDataFile(T& file) throw(ObjectNotFound)
 {
 	return _dataFiles[_dataFiles.indexOf(file)];
 }
