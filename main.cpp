@@ -23,13 +23,13 @@ int main(int argc, char *argv[])
 		tree._root->findSubCategory("one").addDataFile(pl2);
 		tree._root->findSubCategory("one").addSubCategory(three);
 		cout << tree._root->findSubCategory("one")
-				.findDataFile(*(new PhoneLink("gynekologie")));
+				.findDataFile(*(new PhoneLink("gynekologie"))) << endl;
 
 		tree.print();
 		tree.insertCategory("abc", "/a/b/c/");
 		tree.print();
 	} catch (ObjectNotFound& expt) {
-		cout << expt.what() << endl;
+		cout << endl << expt.what() << endl;
 	}
 
 	QApplication a(argc, argv);
