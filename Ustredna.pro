@@ -23,3 +23,4 @@ SOURCES += main.cpp \
     Application/PhoneLink.cpp \
     GUI/mainwindow.cpp \
     Support/Cout.cpp
+OTHER_FILES += Support/poznamky.txt

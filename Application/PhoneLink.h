@@ -10,9 +10,9 @@ struct PhoneLink
 	QString name;
 	unsigned short phone1, phone2, cell1, cell2;
 
-	PhoneLink(QString department, QString name,
-				unsigned short phone1,
-				unsigned short cell1,
+	PhoneLink(QString department, QString name = "",
+				unsigned short phone1 = 0,
+				unsigned short cell1 = 0,
                 unsigned short phone2 = 0,
                 unsigned short cell2 = 0);
 
@@ -20,10 +20,7 @@ struct PhoneLink
 
     void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 
-    bool operator== (PhoneLink& link) const
-    {
-        return this->department == link.department;
-    }
+	bool operator== (PhoneLink link) const;
 };
 
 #endif // PHONELINK_H

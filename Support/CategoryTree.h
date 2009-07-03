@@ -10,16 +10,19 @@ class CategoryTree
     Category<T>* _root;
 
         public:
-    CategoryTree(QString rootCategoryName)
-    {
-        _root = new Category<T>(rootCategoryName);
-    }
+	CategoryTree(QString rootCategoryName);
 
-    void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 };
 
 template<class T>
-void CategoryTree<T>::print(QTextStream& stream,
+inline CategoryTree<T>::CategoryTree(QString rootCategoryName)
+{
+	_root = new Category<T>(rootCategoryName);
+}
+
+template<class T>
+inline void CategoryTree<T>::print(QTextStream& stream,
                             unsigned short tabs) const
 {
     _root->print(stream, tabs);
