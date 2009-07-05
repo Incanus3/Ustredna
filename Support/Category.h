@@ -16,16 +16,17 @@ template<class T>
 		public:
 	Category(QString name) : _name(name) {}
 
-	void rename(QString name);
+	void rename(QString name) throw(InvalidArgument);
 
 	QList<Category> subCategories() const;
 	QList<T> dataFiles() const;
 
-	void addSubCategory(Category<T>& subCat);
-	void removeSubCategory(Category<T>& subCat) throw(ObjectNotFound);
+	void addSubCategory(Category<T>& subCat, bool alreadyThereError = false)
+			throw(InvalidArgument);
+	void removeSubCategory(Category<T>& subCat);
 
 	void addDataFile(T& data);
-	void removeDataFile(T& data) throw(ObjectNotFound);
+	void removeDataFile(T& data);
 
 	Category& findSubCategory(Category& cat) throw(ObjectNotFound);
 	Category& findSubCategory(QString name) throw(ObjectNotFound);
@@ -34,6 +35,7 @@ template<class T>
 	bool operator== (Category cat) const;
 
 	QString name() const;
+	operator QString() const;
 	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 };
 
@@ -45,7 +47,10 @@ template<class T>
 
 template<class T>
 		inline void Category<T>::rename(QString name)
+		throw(InvalidArgument)
 {
+	if(name == "")
+		throw InvalidArgument("Name of the category mustn't be emtpy string");
 	_name = name;
 }
 
@@ -62,14 +67,24 @@ template<class T>
 }
 
 template<class T>
-		inline void Category<T>::addSubCategory(Category<T>& subCat)
+		inline void Category<T>::addSubCategory(Category<T>& subCat,
+												bool alreadythereError)
+		throw(InvalidArgument)
 {
+	if(_subCategories.contains(subCat))
+	{
+		if(alreadythereError)
+			throw InvalidArgument(
+					QString("Subcategory %1 is already a subcategory"
+							"of category %2").arg(subCat).arg(*this));
+		else
+			return;
+	}
 	_subCategories += subCat;
 }
 
 template<class T>
 		inline void Category<T>::removeSubCategory(Category<T>& subCat)
-		throw(ObjectNotFound)
 {
 	_subCategories.removeAll(subCat);
 }
@@ -82,7 +97,6 @@ template<class T>
 
 template<class T>
 		inline void Category<T>::removeDataFile(T& data)
-		throw(ObjectNotFound)
 {
 	_dataFiles.removeAll(data);
 }
@@ -93,9 +107,8 @@ template<class T>
 {
 	int index = _subCategories.indexOf(cat);
 	if(index == -1)
-		throw ObjectNotFound(QString("Category %1 not found")
-							 .arg(cat.name()));
-	return _subCategories[_subCategories.indexOf(cat)];
+		throw ObjectNotFound(QString("Category %1 not found").arg(cat));
+	return _subCategories[index];
 }
 
 template<class T>
@@ -108,13 +121,22 @@ template<class T>
 template<class T>
 		inline T& Category<T>::findDataFile(T& file) throw(ObjectNotFound)
 {
-	return _dataFiles[_dataFiles.indexOf(file)];
+	int index = _dataFiles.indexOf(file);
+	if(index == -1)
+		throw ObjectNotFound(QString("Object %1 not found").arg(file));
+	return _dataFiles[index];
 }
 
 template<class T>
 		inline bool Category<T>::operator== (Category cat) const
 {
 	return _name == cat.name();
+}
+
+template<class T>
+		inline Category<T>::operator QString() const
+{
+	return _name;
 }
 
 template<class T>

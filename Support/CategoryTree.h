@@ -17,7 +17,8 @@ template<class T>
 			void insertCategory(QString name, QString path = "")
 					throw(ObjectNotFound);
 
-			void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+			void print(QTextStream& stream = cout,
+					   unsigned short tabs = 0) const;
 		};
 
 template<class T>

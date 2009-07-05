@@ -1,0 +1,5 @@
+	Nove nabyte poznatky:
+implementaci metod templatovych trid piseme do hlavickoveho souboru,
+	ne do extra cpp
+operator == (napr Category::operator==(Category cat)) nesmi brat jako parametr
+	referenci, nemuze byt inline, pokud neni trida templatova.
