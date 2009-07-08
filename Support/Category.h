@@ -21,11 +21,11 @@ template<class T>
 	QList<Category> subCategories() const;
 	QList<T> dataFiles() const;
 
-	void addSubCategory(Category<T>& subCat, bool alreadyThereError = false)
+	void addSubCategory(Category<T>& subCat, bool alreadyThereError = true)
 			throw(InvalidArgument);
 	void removeSubCategory(Category<T>& subCat);
 
-	void addDataFile(T& data);
+	void addDataFile(T& data, bool alreadythereError = true);
 	void removeDataFile(T& data);
 
 	Category& findSubCategory(Category& cat) throw(ObjectNotFound);
@@ -38,6 +38,8 @@ template<class T>
 	operator QString() const;
 	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 };
+
+// Type T must implement bool operator== and method void print(QTextStream&)
 
 template<class T>
 		inline QString Category<T>::name() const
@@ -75,10 +77,9 @@ template<class T>
 	{
 		if(alreadythereError)
 			throw InvalidArgument(
-					QString("Subcategory %1 is already a subcategory"
+					QString("Subcategory %1 is already a subcategory "
 							"of category %2").arg(subCat).arg(*this));
-		else
-			return;
+		return;
 	}
 	_subCategories += subCat;
 }
@@ -90,8 +91,16 @@ template<class T>
 }
 
 template<class T>
-		inline void Category<T>::addDataFile(T& data)
+		inline void Category<T>::addDataFile(T& data, bool alreadythereError)
 {
+	if(_dataFiles.contains(data))
+	{
+		if(alreadythereError)
+			throw InvalidArgument(
+					QString("Data file %1 is already in "
+							"category %2").arg(data).arg(*this));
+		return;
+	}
 	_dataFiles += data;
 }
 
@@ -159,7 +168,8 @@ template<class T>
 	{
 		for(int i = 0; i < tabs + 1; i++)
 			stream << "\t";
-		stream << dataFilesIter.next() << endl;
+		dataFilesIter.next().print(stream);
+		stream << endl;
 	}
 }
 

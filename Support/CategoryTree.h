@@ -6,20 +6,27 @@
 template<class T>
 		class CategoryTree
 {
-		public: // DEBUG
-			Category<T>* _root;
+	Category<T>* _root;
+
+	Category<T>* findDirectory(QString path) const
+			throw(ObjectNotFound);
 
 		public:
-			CategoryTree(QString rootCategoryName);
+	CategoryTree(QString rootCategoryName);
 
-			void insertCategory(Category<T>& cat, QString path = "")
-					throw(ObjectNotFound);
-			void insertCategory(QString name, QString path = "")
-					throw(ObjectNotFound);
+	Category<T> root() const;
 
-			void print(QTextStream& stream = cout,
-					   unsigned short tabs = 0) const;
-		};
+	void insertCategory(Category<T>& cat, QString path = "/")
+			throw(ObjectNotFound);
+	void insertCategory(QString name, QString path = "/")
+			throw(ObjectNotFound);
+
+	void insertDataFile(T& data, QString path = "/")
+			throw(ObjectNotFound, InvalidArgument);
+
+	void print(QTextStream& stream = cout,
+			   unsigned short tabs = 0) const;
+};
 
 template<class T>
 		inline CategoryTree<T>::CategoryTree(QString rootCategoryName)
@@ -28,7 +35,13 @@ template<class T>
 }
 
 template<class T>
-		void CategoryTree<T>::insertCategory(Category<T>& cat, QString path)
+		inline Category<T> CategoryTree<T>::root() const
+{
+	return *_root;
+}
+
+template<class T>
+Category<T>* CategoryTree<T>::findDirectory(QString path) const
 		throw(ObjectNotFound)
 {
 	Category<T>* current = _root;
@@ -42,7 +55,15 @@ template<class T>
 								 + expt.what());
 		}
 	}
-	current->addSubCategory(cat);
+	return current;
+}
+
+template<class T>
+		void CategoryTree<T>::insertCategory(Category<T>& cat, QString path)
+		throw(ObjectNotFound)
+{
+	Category<T>* category = findDirectory(path);
+	category->addSubCategory(cat);
 }
 
 template<class T>
@@ -51,6 +72,14 @@ template<class T>
 {
 	Category<T> cat(name);
 	insertCategory(cat, path);
+}
+
+template<class T>
+		void CategoryTree<T>::insertDataFile(T& data, QString path)
+		throw(ObjectNotFound, InvalidArgument)
+{
+	Category<T>* category = findDirectory(path);
+	category->addDataFile(data);
 }
 
 template<class T>

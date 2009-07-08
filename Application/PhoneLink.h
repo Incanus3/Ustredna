@@ -18,7 +18,7 @@ struct PhoneLink
 
     operator QString() const;
 
-    void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+	void print(QTextStream& stream = cout) const;
 
 	bool operator== (PhoneLink link) const;
 };
