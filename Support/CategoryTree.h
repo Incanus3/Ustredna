@@ -11,17 +11,22 @@ template<class T>
 	Category<T>* findDirectory(QString path) const
 			throw(ObjectNotFound);
 
+	Category<T>* createPath(QString path);
+
 		public:
 	CategoryTree(QString rootCategoryName);
 
 	Category<T> root() const;
 
-	void insertCategory(Category<T>& cat, QString path = "/")
+	void insertCategory(Category<T>& cat, QString path = "/",
+						bool createThePath = false)
 			throw(ObjectNotFound);
-	void insertCategory(QString name, QString path = "/")
+	void insertCategory(QString name, QString path = "/",
+						bool createThePath = false)
 			throw(ObjectNotFound);
 
-	void insertDataFile(T& data, QString path = "/")
+	void insertDataFile(T& data, QString path = "/",
+						bool createThePath = false)
 			throw(ObjectNotFound, InvalidArgument);
 
 	void print(QTextStream& stream = cout,
@@ -41,7 +46,7 @@ template<class T>
 }
 
 template<class T>
-Category<T>* CategoryTree<T>::findDirectory(QString path) const
+		Category<T>* CategoryTree<T>::findDirectory(QString path) const
 		throw(ObjectNotFound)
 {
 	Category<T>* current = _root;
@@ -59,26 +64,41 @@ Category<T>* CategoryTree<T>::findDirectory(QString path) const
 }
 
 template<class T>
-		void CategoryTree<T>::insertCategory(Category<T>& cat, QString path)
+		Category<T>* CategoryTree<T>::createPath(QString path)
+{
+	Category<T>* current = _root;
+	QStringList splitPath = path.split("/", QString::SkipEmptyParts);
+	for(int i = 0; i < splitPath.size(); i++)
+	{
+		current->addSubCategory(splitPath[i], false);
+		current = &current->findSubCategory(splitPath[i]);
+	}
+	return current;
+}
+
+template<class T>
+		void CategoryTree<T>::insertCategory(Category<T>& cat, QString path,
+											 bool createThePath)
 		throw(ObjectNotFound)
 {
-	Category<T>* category = findDirectory(path);
+	Category<T>* category = createThePath ? createPath(path) : findDirectory(path);
 	category->addSubCategory(cat);
 }
 
 template<class T>
-		inline void CategoryTree<T>::insertCategory(QString name, QString path)
+		inline void CategoryTree<T>::insertCategory(QString name, QString path,
+													bool createThePath)
 		throw(ObjectNotFound)
 {
-	Category<T> cat(name);
-	insertCategory(cat, path);
+	insertCategory(*(new Category<T>(name)), path, createThePath);
 }
 
 template<class T>
-		void CategoryTree<T>::insertDataFile(T& data, QString path)
+		void CategoryTree<T>::insertDataFile(T& data, QString path,
+											 bool createThePath)
 		throw(ObjectNotFound, InvalidArgument)
 {
-	Category<T>* category = findDirectory(path);
+	Category<T>* category = createThePath ? createPath(path) : findDirectory(path);
 	category->addDataFile(data);
 }
 

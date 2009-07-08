@@ -23,6 +23,8 @@ template<class T>
 
 	void addSubCategory(Category<T>& subCat, bool alreadyThereError = true)
 			throw(InvalidArgument);
+	void addSubCategory(QString name, bool alreadyThereError = true)
+			throw(InvalidArgument);
 	void removeSubCategory(Category<T>& subCat);
 
 	void addDataFile(T& data, bool alreadythereError = true);
@@ -69,7 +71,7 @@ template<class T>
 }
 
 template<class T>
-		inline void Category<T>::addSubCategory(Category<T>& subCat,
+		void Category<T>::addSubCategory(Category<T>& subCat,
 												bool alreadythereError)
 		throw(InvalidArgument)
 {
@@ -82,6 +84,14 @@ template<class T>
 		return;
 	}
 	_subCategories += subCat;
+}
+
+template<class T>
+		inline void Category<T>::addSubCategory(QString name,
+												bool alreadyThereError)
+		throw(InvalidArgument)
+{
+	return addSubCategory(*(new Category<T>(name)), alreadyThereError);
 }
 
 template<class T>
