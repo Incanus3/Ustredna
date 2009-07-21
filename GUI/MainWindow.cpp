@@ -1,7 +1,6 @@
 #include "MainWindow.h"
-#include <QtGui/QHBoxLayout>
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
+MainWindow::MainWindow()
 {
 	mainWidget = new MainWidget();
 
