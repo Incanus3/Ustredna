@@ -14,14 +14,16 @@ INCLUDEPATH += . \
 
 # Input
 HEADERS += Application/PhoneLink.h \
-    GUI/mainwindow.h \
     Support/Category.h \
     Support/CategoryTree.h \
     Support/Cout.h \
-    Support/Exceptions.h
-FORMS += GUI/mainwindow.ui
+    Support/Exceptions.h \
+    GUI/MainWindow.h \
+    GUI/MainWidget.h
+FORMS += 
 SOURCES += main.cpp \
     Application/PhoneLink.cpp \
-    GUI/mainwindow.cpp \
-    Support/Cout.cpp
+    Support/Cout.cpp \
+    GUI/MainWindow.cpp \
+    GUI/MainWidget.cpp
 OTHER_FILES += Support/poznamky.txt
