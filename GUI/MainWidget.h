@@ -14,15 +14,7 @@ class MainWidget : public QWidget
 	MainWidget(QWidget* parent = 0);
 
 		private slots:
-	void selectionChanged(int rowNumber, int listNumber);
-
-		// priserny reseni, ale zatim me nenapada, jak to vyresit lip:
-	void list0Changed(int rowNumber);
-	void list1Changed(int rowNumber);
-	void list2Changed(int rowNumber);
-	void list3Changed(int rowNumber);
-	void list4Changed(int rowNumber);
-	void list5Changed(int rowNumber);
+	void selectionChanged();
 
 		private:
 	static const short int listMinimumWidth;
