@@ -14,10 +14,15 @@ class MainWidget : public QWidget
 	MainWidget(QWidget* parent = 0);
 
 		private:
+	static const short int listMinimumWidth;
+	static const short int listMinimumHeight;
 	static const short int listsNumber;
+	static const short int numberEditWidth;
+	static const short int textEditMinWidth;
 
 	void initializeWidgets();
 	void initializeLayouts();
+	void fillLists();
 
 	QListWidget* lists;
 
