@@ -16,6 +16,9 @@ class MainWidget : public QWidget
 		private:
 	static const short int listsNumber;
 
+	void initializeWidgets();
+	void initializeLayouts();
+
 	QListWidget* lists;
 
 	QLabel* departmentLabel;

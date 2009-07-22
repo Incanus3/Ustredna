@@ -1,14 +1,28 @@
 #include <QtGui/QApplication>
-#include <QTextStream>
+#include <QTextCodec>
 #include "MainWindow.h"
 #include "CategoryTree.h"
 #include "PhoneLink.h"
+#include "Cout.h"
 
 using namespace std;
 
+void pokusy();
+
 int main(int argc, char *argv[])
 {
-	QTextStream cout(stdout);
+	pokusy();
+
+	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+
+	QApplication a(argc, argv);
+	MainWindow w;
+	w.show();
+	return a.exec();
+}
+
+void pokusy()
+{
 	CategoryTree<PhoneLink> tree("abcd");
 	PhoneLink pl("gynekologie", "boudova", 123, 456);
 	PhoneLink pl2 = pl;
@@ -37,11 +51,4 @@ int main(int argc, char *argv[])
 		cout << endl << expt.what() << endl;
 	}
 	tree.print();
-
-
-	QApplication a(argc, argv);
-	MainWindow w;
-	w.show();
-	return a.exec();
-	//return 0;
 }
