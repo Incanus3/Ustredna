@@ -1,6 +1,8 @@
 #include "MainWidget.h"
 #include <QtGui/QBoxLayout>
 #include <QTextCodec>
+#include <QApplication>
+#include <QMessageBox>
 
 const short int MainWidget::listMinimumWidth = 160;
 const short int MainWidget::listMinimumHeight = 400;
@@ -85,6 +87,22 @@ void MainWidget::initializeLayouts()
 	setLayout(mainLayout);
 }
 
+void MainWidget::initializeConnections()
+{
+	QObject::connect(&lists[0], SIGNAL(currentRowChanged(int)),
+					 this, SLOT(list0Changed(int)));
+	QObject::connect(&lists[1], SIGNAL(currentRowChanged(int)),
+					 this, SLOT(list1Changed(int)));
+	QObject::connect(&lists[2], SIGNAL(currentRowChanged(int)),
+					 this, SLOT(list2Changed(int)));
+	QObject::connect(&lists[3], SIGNAL(currentRowChanged(int)),
+					 this, SLOT(list3Changed(int)));
+	QObject::connect(&lists[4], SIGNAL(currentRowChanged(int)),
+					 this, SLOT(list4Changed(int)));
+//	QObject::connect(&lists[5], SIGNAL(currentRowChanged(int)),
+//					 this, SLOT(list5Changed(int)));
+}
+
 void MainWidget::fillLists() // DEBUG
 {
 	for(int i = 0; i < listsNumber; i++)
@@ -102,5 +120,44 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 {
 	initializeWidgets();
 	initializeLayouts();
+	initializeConnections();
 	fillLists(); // DEBUG
+}
+
+void MainWidget::list0Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 0);
+}
+
+void MainWidget::list1Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 1);
+}
+
+void MainWidget::list2Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 2);
+}
+
+void MainWidget::list3Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 3);
+}
+
+void MainWidget::list4Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 4);
+}
+
+void MainWidget::list5Changed(int rowNumber)
+{
+	selectionChanged(rowNumber, 5);
+}
+
+void MainWidget::selectionChanged(int rowNumber, int listNumber)
+{
+	QMessageBox msgBox;
+	msgBox.setText(QString("Selection in list %1 has changed to %2")
+				   .arg(listNumber).arg(rowNumber));
+	msgBox.exec();
 }
