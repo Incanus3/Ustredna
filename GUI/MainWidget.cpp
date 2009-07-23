@@ -125,13 +125,12 @@ void MainWidget::selectionChanged()
 
 void MainWidget::openDatabase()
 {
-	QString fileName =
+	QString path =
 			QFileDialog::
 			getOpenFileName(this,
 							tr("Otevřít soubor se seznamem"),
-							QDir::homePath(),
+							".",
 							tr("Phone Database Files (*.phd)"));
 
-	cout << "MainWidget::openDatabase() was called" << endl <<
-			QString("and %1 was selected").arg(fileName) << endl; // DEBUG
+	database = new PhoneDatabase(path);
 }

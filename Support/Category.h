@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QStringList>
 #include "Cout.h"
 #include "Exceptions.h"
 

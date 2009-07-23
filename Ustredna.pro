@@ -19,10 +19,12 @@ HEADERS += Application/PhoneLink.h \
     Support/Category.h \
     Support/CategoryTree.h \
     Support/Cout.h \
-    Support/Exceptions.h
+    Support/Exceptions.h \
+    Application/Database.h
 SOURCES += main.cpp \
     Application/PhoneLink.cpp \
     GUI/MainWidget.cpp \
     GUI/MainWindow.cpp \
-    Support/Cout.cpp
+    Support/Cout.cpp \
+    Application/Database.cpp
 RESOURCES += GUI/icons.qrc

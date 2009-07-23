@@ -6,6 +6,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QAction>
+#include "Database.h"
 
 class MainWidget : public QWidget
 {
@@ -45,6 +46,8 @@ class MainWidget : public QWidget
 	QLineEdit* phone2Edit;
 	QLineEdit* cell1Edit;
 	QLineEdit* cell2Edit;
+
+	PhoneDatabase* database;
 
 };
 
