@@ -1,12 +1,13 @@
-#include "MainWidget.h"
 #include <QtGui/QBoxLayout>
-#include <QTextCodec>
-#include <QApplication>
-#include <QMessageBox>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#include <QDir>
+#include "MainWidget.h"
+#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
 const short int MainWidget::listMinimumHeight = 400;
-const short int MainWidget::listsNumber = 5; // muze byt 1 az 6
+const short int MainWidget::listsNumber = 5;
 const short int MainWidget::textEditMinWidth = 180;
 const short int MainWidget::numberEditWidth = 40;
 
@@ -120,4 +121,17 @@ void MainWidget::selectionChanged()
 	QMessageBox msgBox;
 	msgBox.setText("Selection has changed");
 	msgBox.exec();
+}
+
+void MainWidget::openDatabase()
+{
+	QString fileName =
+			QFileDialog::
+			getOpenFileName(this,
+							tr("Otevřít soubor se seznamem"),
+							QDir::homePath(),
+							tr("Phone Database Files (*.phd)"));
+
+	cout << "MainWidget::openDatabase() was called" << endl <<
+			QString("and %1 was selected").arg(fileName) << endl; // DEBUG
 }

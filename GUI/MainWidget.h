@@ -5,6 +5,7 @@
 #include <QtGui/QListWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <QtGui/QAction>
 
 class MainWidget : public QWidget
 {
@@ -12,6 +13,9 @@ class MainWidget : public QWidget
 
 		public:
 	MainWidget(QWidget* parent = 0);
+
+		public slots:
+	void openDatabase();
 
 		private slots:
 	void selectionChanged();
