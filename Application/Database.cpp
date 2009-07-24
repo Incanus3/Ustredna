@@ -22,11 +22,16 @@ CategoryTree<PhoneLink>* PhoneDatabase::loadDatabase(QString path, QString name)
 	QString line;
 	QStringList splitLine;
 	CategoryTree<PhoneLink>* tree = new CategoryTree<PhoneLink>(name);
+	int lineNumber = 0;
 
 	while(!dataStream.atEnd())
 	{
-		line = dataStream.readLine().remove('"');
-		splitLine = line.split(",");
+		lineNumber++;
+		line = dataStream.readLine();
+		splitLine = QString(line).remove('"').split(",");
+		if(splitLine.size() != 6)
+			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
+							  .arg(lineNumber).arg(line).arg(path)));
 		tree->insertDataFile(*(new PhoneLink(splitLine[1],
 											 splitLine[2].toUShort(),
 											 splitLine[3].toUShort(),
