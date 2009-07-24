@@ -1,12 +1,14 @@
 #include "PhoneLink.h"
 
-PhoneLink::PhoneLink(QString department, QString name,
+PhoneLink::PhoneLink(
+//		QString department,
+		QString name,
 					 unsigned short phone1,
 					 unsigned short cell1,
 					 unsigned short phone2,
 					 unsigned short cell2)
 {
-	this->department = department;
+//	this->department = department;
 	this->name = name;
 	this->phone1 = phone1;
 	this->phone2 = phone2;
@@ -16,17 +18,17 @@ PhoneLink::PhoneLink(QString department, QString name,
 
 bool PhoneLink::operator== (PhoneLink link) const
 {
-	return this->department == link.department;
+	return this->name == link.name;
 }
 
 void PhoneLink::print(QTextStream& stream) const
 {
 	QString separator = " | ";
-	stream << QString("%1%2%3%2%4%2%5").arg(department).arg(separator)
-			.arg(name).arg(phone1).arg(cell1) << endl;
+	stream << QString("%1%2%3%2%4").arg(name).arg(separator)
+			.arg(phone1).arg(cell1) << endl;
 }
 
 PhoneLink::operator QString() const
 {
-	return department;
+	return name;
 }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 void pokusy()
 {
 	CategoryTree<PhoneLink> tree("abcd");
-	PhoneLink pl("gynekologie", "boudova", 123, 456);
+	PhoneLink pl("boudova", 123, 456);
 	PhoneLink pl2 = pl;
 	pl2.name = "nekdo jinej";
 

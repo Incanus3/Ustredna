@@ -24,4 +24,10 @@ class InvalidArgument : public QException
 	InvalidArgument(QString msg = "Invalid argument") : QException(msg) {}
 };
 
+class InvalidFile : public QException
+{
+		public:
+	InvalidFile(QString msg = "Invalid file") : QException(msg) {}
+};
+
 #endif // EXCEPTIONS_H

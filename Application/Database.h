@@ -8,10 +8,11 @@ class PhoneDatabase
 {
 	CategoryTree<PhoneLink>* tree;
 
-	CategoryTree<PhoneLink>* loadDatabase(QString path);
+	CategoryTree<PhoneLink>* loadDatabase(QString path, QString name)
+			throw(InvalidFile);
 
 		public:
-	PhoneDatabase(QString path);
+	PhoneDatabase(QString path, QString name = "Nemocnice") throw(InvalidFile);
 };
 
 #endif // DATABASE_H

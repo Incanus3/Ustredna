@@ -14,7 +14,7 @@ template<class T>
 	Category<T>* createPath(QString path);
 
 		public:
-	CategoryTree(QString rootCategoryName);
+	CategoryTree(QString rootCategoryName = "");
 
 	Category<T> root() const;
 

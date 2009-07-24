@@ -128,8 +128,7 @@ void MainWidget::openDatabase()
 	QString path =
 			QFileDialog::
 			getOpenFileName(this,
-							tr("Otevřít soubor se seznamem"),
-							".",
+							tr("Otevřít soubor se seznamem"), ".",
 							tr("Phone Database Files (*.phd)"));
 
 	database = new PhoneDatabase(path);
