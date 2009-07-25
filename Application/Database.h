@@ -4,11 +4,9 @@
 #include "CategoryTree.h"
 #include "PhoneLink.h"
 
-class PhoneDatabase
+class PhoneDatabase : public CategoryTree<PhoneLink>
 {
-	CategoryTree<PhoneLink>* tree;
-
-	CategoryTree<PhoneLink>* loadDatabase(QString path, QString name)
+	void loadDatabase(QString path)
 			throw(InvalidFile);
 
 		public:

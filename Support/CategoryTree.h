@@ -8,10 +8,12 @@ template<class T>
 {
 	Category<T>* _root;
 
-	Category<T>* findDirectory(QString path) const
+	Category<T>& findDirectory(QString path)
+			throw(ObjectNotFound);
+	T& findDataFile(QString path, T dataFile)
 			throw(ObjectNotFound);
 
-	Category<T>* createPath(QString path);
+	Category<T>& createPath(QString path);
 
 		public:
 	CategoryTree(QString rootCategoryName = "");
@@ -31,6 +33,8 @@ template<class T>
 
 	void print(QTextStream& stream = cout,
 			   unsigned short tabs = 0) const;
+
+	void clear();
 };
 
 template<class T>
@@ -46,7 +50,7 @@ template<class T>
 }
 
 template<class T>
-		Category<T>* CategoryTree<T>::findDirectory(QString path) const
+		Category<T>& CategoryTree<T>::findDirectory(QString path)
 		throw(ObjectNotFound)
 {
 	Category<T>* current = _root;
@@ -60,11 +64,19 @@ template<class T>
 								 + expt.what());
 		}
 	}
-	return current;
+	return *current;
 }
 
 template<class T>
-		Category<T>* CategoryTree<T>::createPath(QString path)
+		T& CategoryTree<T>::findDataFile(QString path, T dataFile)
+		throw(ObjectNotFound)
+{
+	Category<T>* directory = findDirectory(path);
+	return directory->findDataFile(dataFile);
+}
+
+template<class T>
+		Category<T>& CategoryTree<T>::createPath(QString path)
 {
 	Category<T>* current = _root;
 	QStringList splitPath = path.split("/", QString::SkipEmptyParts);
@@ -73,7 +85,7 @@ template<class T>
 		current->addSubCategory(splitPath[i], false);
 		current = &current->findSubCategory(splitPath[i]);
 	}
-	return current;
+	return *current;
 }
 
 template<class T>
@@ -81,8 +93,8 @@ template<class T>
 											 bool createThePath)
 		throw(ObjectNotFound)
 {
-	Category<T>* category = createThePath ? createPath(path) : findDirectory(path);
-	category->addSubCategory(cat);
+	Category<T>& category = createThePath ? createPath(path) : findDirectory(path);
+	category.addSubCategory(cat);
 }
 
 template<class T>
@@ -98,8 +110,8 @@ template<class T>
 											 bool createThePath)
 		throw(ObjectNotFound, InvalidArgument)
 {
-	Category<T>* category = createThePath ? createPath(path) : findDirectory(path);
-	category->addDataFile(data);
+	Category<T>& category = createThePath ? createPath(path) : findDirectory(path);
+	category.addDataFile(data);
 }
 
 template<class T>
@@ -107,6 +119,14 @@ template<class T>
 										   unsigned short tabs) const
 {
 	_root->print(stream, tabs);
+}
+
+template<class T>
+		void CategoryTree<T>::clear()
+{
+	QString rootName = _root->name();
+	delete _root;
+	_root = new Category<T>(rootName);
 }
 
 #endif // CATEGORYTREE_H

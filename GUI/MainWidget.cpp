@@ -1,7 +1,7 @@
 #include <QtGui/QBoxLayout>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
-#include <QDir>
+#include <QList>
 #include "MainWidget.h"
 #include "Cout.h"
 
@@ -119,7 +119,10 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 void MainWidget::selectionChanged()
 {
 	QMessageBox msgBox;
-	msgBox.setText("Selection has changed");
+	QString selection;
+	for(int i = 0; i < listsNumber; i++)
+		selection = selection + QString(" %1").arg(lists[i].currentRow());
+	msgBox.setText("Selection has changed: " + selection);
 	msgBox.exec();
 }
 
@@ -132,4 +135,15 @@ void MainWidget::openDatabase()
 							tr("Phone Database Files (*.phd)"));
 
 	database = new PhoneDatabase(path);
+
+	for(int i = 0; i < listsNumber; i++)
+		lists[i].clear();
+
+	QList<Category<PhoneLink> > categories = database->root().subCategories();
+	for(int i = 0; i < categories.size(); i++)
+		lists[0].addItem(categories[i].name());
+
+	QList<PhoneLink> files = database->root().dataFiles();
+	for(int i = 0; i < files.size(); i++)
+		lists[0].addItem(files[i].name);
 }

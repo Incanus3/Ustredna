@@ -6,12 +6,12 @@
 #include "Cout.h" // DEBUG
 
 PhoneDatabase::PhoneDatabase(QString path, QString name)
-		throw(InvalidFile)
+		throw(InvalidFile) : CategoryTree<PhoneLink>(name)
 {
-	tree = loadDatabase(path, name);
+	loadDatabase(path);
 }
 
-CategoryTree<PhoneLink>* PhoneDatabase::loadDatabase(QString path, QString name)
+void PhoneDatabase::loadDatabase(QString path)
 		throw(InvalidFile)
 {
 	QFile dataFile(path);
@@ -21,8 +21,9 @@ CategoryTree<PhoneLink>* PhoneDatabase::loadDatabase(QString path, QString name)
 	QTextStream dataStream(&dataFile);
 	QString line;
 	QStringList splitLine;
-	CategoryTree<PhoneLink>* tree = new CategoryTree<PhoneLink>(name);
 	int lineNumber = 0;
+
+	clear();
 
 	while(!dataStream.atEnd())
 	{
@@ -32,15 +33,13 @@ CategoryTree<PhoneLink>* PhoneDatabase::loadDatabase(QString path, QString name)
 		if(splitLine.size() != 6)
 			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
 							  .arg(lineNumber).arg(line).arg(path)));
-		tree->insertDataFile(*(new PhoneLink(splitLine[1],
-											 splitLine[2].toUShort(),
-											 splitLine[3].toUShort(),
-											 splitLine[4].toUShort(),
-											 splitLine[5].toUShort())),
-							 splitLine[0], true);
+		insertDataFile(*(new PhoneLink(splitLine[1],
+									   splitLine[2].toUShort(),
+									   splitLine[3].toUShort(),
+									   splitLine[4].toUShort(),
+									   splitLine[5].toUShort())),
+					   splitLine[0], true);
 	}
 
-	tree->print(); // DEBUG
-
-	return tree;
+	print();
 }
