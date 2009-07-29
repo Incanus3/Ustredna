@@ -29,4 +29,5 @@ SOURCES += main.cpp \
     Application/Database.cpp
 RESOURCES += GUI/icons.qrc
 OTHER_FILES += pokus.phd \
-    poznamky.txt
+    poznamky.txt \
+    seznam.phd
