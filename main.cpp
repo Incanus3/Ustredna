@@ -41,7 +41,7 @@ void pokusy()
 		cout << expt.what() << endl;
 	}
 
-	cout << tree.root().findSubCategory("one")
+	cout << tree.root()->findSubCategory("one")
 			.findDataFile(*(new PhoneLink("gynekologie"))) << endl;
 
 	tree.print();

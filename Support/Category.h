@@ -16,11 +16,12 @@ template<class T>
 	
 		public:
 	Category(QString name) : _name(name) {}
+	Category(const Category<T>& original);
 
 	void rename(QString name) throw(InvalidArgument);
 
-	QList<Category> subCategories() const;
-	QList<T> dataFiles() const;
+	QList<Category>& subCategories() const;
+	QList<T>& dataFiles() const;
 
 	void addSubCategory(Category<T>& subCat, bool alreadyThereError = true)
 			throw(InvalidArgument);
@@ -28,12 +29,12 @@ template<class T>
 			throw(InvalidArgument);
 	void removeSubCategory(Category<T>& subCat);
 
-	void addDataFile(T& data, bool alreadythereError = true);
-	void removeDataFile(T& data);
+	void addDataFile(T data, bool alreadythereError = true);
+	void removeDataFile(T data);
 
 	Category& findSubCategory(Category& cat) throw(ObjectNotFound);
 	Category& findSubCategory(QString name) throw(ObjectNotFound);
-	T& findDataFile(T& file) throw(ObjectNotFound);
+	T& findDataFile(T file) throw(ObjectNotFound);
 
 	bool operator== (Category cat) const;
 
@@ -43,6 +44,14 @@ template<class T>
 };
 
 // Type T must implement bool operator== and method void print(QTextStream&)
+
+template<class T>
+		Category<T>::Category(const Category<T>& original)
+{
+	_name = original.name();
+	_subCategories = QList<Category<T> >(original.subCategories());
+	_dataFiles = QList<T>(original.dataFiles());
+}
 
 template<class T>
 		inline QString Category<T>::name() const
@@ -60,15 +69,19 @@ template<class T>
 }
 
 template<class T>
-		inline QList<Category<T> > Category<T>::subCategories() const
+		inline QList<Category<T> >& Category<T>::subCategories() const
 {
-	return _subCategories;
+	QList<Category<T> >* subCatsCopy = new QList<Category<T> >(_subCategories);
+	
+	return *subCatsCopy;
 }
 
 template<class T>
-		inline QList<T> Category<T>::dataFiles() const
+		inline QList<T>& Category<T>::dataFiles() const
 {
-	return _dataFiles;
+	QList<T>* dtFilesCopy = new QList<T>(_dataFiles);
+
+	return *dtFilesCopy;
 }
 
 template<class T>
@@ -102,7 +115,7 @@ template<class T>
 }
 
 template<class T>
-		inline void Category<T>::addDataFile(T& data, bool alreadythereError)
+		inline void Category<T>::addDataFile(T data, bool alreadythereError)
 {
 	if(_dataFiles.contains(data))
 	{
@@ -116,7 +129,7 @@ template<class T>
 }
 
 template<class T>
-		inline void Category<T>::removeDataFile(T& data)
+		inline void Category<T>::removeDataFile(T data)
 {
 	_dataFiles.removeAll(data);
 }
@@ -139,7 +152,7 @@ template<class T>
 }
 
 template<class T>
-		inline T& Category<T>::findDataFile(T& file) throw(ObjectNotFound)
+		inline T& Category<T>::findDataFile(T file) throw(ObjectNotFound)
 {
 	int index = _dataFiles.indexOf(file);
 	if(index == -1)

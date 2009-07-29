@@ -3,7 +3,6 @@
 #include <QStringList>
 #include "Exceptions.h"
 #include "Database.h"
-#include "Cout.h" // DEBUG
 
 PhoneDatabase::PhoneDatabase(QString path, QString name)
 		throw(InvalidFile) : CategoryTree<PhoneLink>(name)
@@ -40,6 +39,4 @@ void PhoneDatabase::loadDatabase(QString path)
 									   splitLine[5].toUShort())),
 					   splitLine[0], true);
 	}
-
-	print();
 }

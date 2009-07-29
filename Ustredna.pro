@@ -28,3 +28,5 @@ SOURCES += main.cpp \
     Support/Cout.cpp \
     Application/Database.cpp
 RESOURCES += GUI/icons.qrc
+OTHER_FILES += pokus.phd \
+    poznamky.txt

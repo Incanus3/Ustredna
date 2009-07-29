@@ -65,18 +65,19 @@ void MainWidget::initializeLayouts()
 		listsLayout->addWidget(&lists[i]);
 
 	QHBoxLayout* dataLayout = new QHBoxLayout;
+
 	dataLayout->addWidget(departmentLabel);
 	dataLayout->addWidget(departmentEdit);
-	dataLayout->addStretch();
+	dataLayout->addSpacing(10);
 
 	dataLayout->addWidget(nameLabel);
 	dataLayout->addWidget(nameEdit);
-	dataLayout->addStretch();
+	dataLayout->addSpacing(10);
 
 	dataLayout->addWidget(phonesLabel);
 	dataLayout->addWidget(phone1Edit);
 	dataLayout->addWidget(phone2Edit);
-	dataLayout->addStretch();
+	dataLayout->addSpacing(10);
 
 	dataLayout->addWidget(cellsLabel);
 	dataLayout->addWidget(cell1Edit);
@@ -95,35 +96,119 @@ void MainWidget::initializeConnections()
 						 this, SLOT(selectionChanged()));
 }
 
-void MainWidget::fillLists() // DEBUG
-{
-	for(int i = 0; i < listsNumber; i++)
-		for(int j = 1; j <= i + 1; j++)
-			lists[i].addItem(QString(tr("farebná televízia %1")).arg(j));
-
-	departmentEdit->setText(tr("Centrální operační sály"));
-	nameEdit->setText(tr("Ševicová, Marta"));
-	phone1Edit->setText("123");
-	phone2Edit->setText("456");
-	cell1Edit->setText("789");
-}
-
 MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 {
+	lastSelection = new int[listsNumber];
+	lastSelection[0] = 0;
+	for(int i = 1; i < listsNumber; i++)
+		lastSelection[i] = -1;
 	initializeWidgets();
 	initializeLayouts();
 	initializeConnections();
-	fillLists(); // DEBUG
+}
+
+void MainWidget::populateList(unsigned short int listNumber,
+							  Category<PhoneLink> category)
+{
+	cout << endl << "zacatek populateList()" << endl;
+	cout << "listNumber: " << listNumber << endl;
+	cout << "category.name(): " << category.name() << endl;
+
+	QList<Category<PhoneLink> > categories = category.subCategories();
+	for(int i = 0; i < categories.size(); i++)
+		lists[listNumber].addItem(categories[i].name());
+
+	QList<PhoneLink> files = category.dataFiles();
+	for(int i = 0; i < files.size(); i++)
+		lists[listNumber].addItem(files[i].name);
+}
+
+void MainWidget::showFile(PhoneLink file)
+{
+	nameEdit->setText(file.name);
+	phone1Edit->setText(QString("%1").arg(file.phone1));
+	phone2Edit->setText(QString("%1").arg(file.phone2));
+	cell1Edit->setText(QString("%1").arg(file.cell1));
+	cell2Edit->setText(QString("%1").arg(file.cell2));
 }
 
 void MainWidget::selectionChanged()
 {
-	QMessageBox msgBox;
-	QString selection;
-	for(int i = 0; i < listsNumber; i++)
-		selection = selection + QString(" %1").arg(lists[i].currentRow());
-	msgBox.setText("Selection has changed: " + selection);
-	msgBox.exec();
+	cout << "***********************************\n" <<
+			"Zacatek selectionChanged" << endl;
+
+	// zjistim, ve kterem listu se zmenil vyber
+	unsigned short changedListNumber;
+	for(changedListNumber = 0; changedListNumber < listsNumber;
+		changedListNumber++)
+	{
+		if(lists[changedListNumber].currentRow() == -1 ||
+		   lastSelection[changedListNumber] !=
+		   lists[changedListNumber].currentRow())
+			break;
+	}
+
+	if(lists[changedListNumber].currentRow() == -1)
+		changedListNumber--;
+
+	cout << "changedListNumber: " << changedListNumber << endl; // DEBUG
+
+	// index nove vybraneho radku
+	int changedRow = lists[changedListNumber].currentRow();
+
+	cout << "changedRow: " << changedRow << endl; // DEBUG
+
+	// aktualizuji posledni ulozeny vyber
+	lastSelection[changedListNumber] = changedRow;
+
+	// vymazu vsechny listy vpravo od prave zmeneneho
+	for(int i = changedListNumber + 1; i < listsNumber; i++)
+	{
+		lastSelection[i] = -1;
+		lists[i].clear();
+	}
+
+	if(database)
+	{
+		// najdu kategorii, ktera je v prave zmenenem listu zobrazena
+
+		Category<PhoneLink>* current = database->root();
+
+		cout << "zacinam vyhledavat kategorii, ze ktere byl ucinen vyber" << endl;
+
+		for(int i = 0; i < changedListNumber; i++)
+		{
+			cout << current->name() << endl;
+			cout << "vybiram " << lists[i].currentRow() << ". podkategorii: " <<
+					current->subCategories()[lists[i].currentRow()].name() << endl;
+			current = &current->subCategories()[lists[i].currentRow()];
+		}
+
+		cout << "current: " << current << endl;
+		cout << "current->name(): " << current->name() << endl;
+		//current->print();
+
+		// extrahuju jeji podkategorie a datove polozky
+		QList<Category<PhoneLink> > categories = current->subCategories();
+		QList<PhoneLink> files = current->dataFiles();
+
+		cout << "categories.count(): " << categories.count() << endl;
+
+		// pokud byla vybrana podkategorie
+		if(changedRow < categories.count())
+			// zobrazim jeji obsah v dalsim listu
+		{
+			cout << "volam populateList()" << endl;
+			populateList(changedListNumber + 1,
+						 current->subCategories()[changedRow]);
+		}
+		else
+			// jinak zobrazim vybranou datovou polozku
+		{
+			cout << "volam showFile()" << endl;
+			showFile(files[changedRow - categories.size()]);
+		}
+	}
 }
 
 void MainWidget::openDatabase()
@@ -139,11 +224,11 @@ void MainWidget::openDatabase()
 	for(int i = 0; i < listsNumber; i++)
 		lists[i].clear();
 
-	QList<Category<PhoneLink> > categories = database->root().subCategories();
+	QList<Category<PhoneLink> > categories = database->root()->subCategories();
 	for(int i = 0; i < categories.size(); i++)
 		lists[0].addItem(categories[i].name());
 
-	QList<PhoneLink> files = database->root().dataFiles();
+	QList<PhoneLink> files = database->root()->dataFiles();
 	for(int i = 0; i < files.size(); i++)
 		lists[0].addItem(files[i].name);
 }

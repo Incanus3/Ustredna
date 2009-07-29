@@ -31,7 +31,10 @@ class MainWidget : public QWidget
 	void initializeWidgets();
 	void initializeLayouts();
 	void initializeConnections();
-	void fillLists();
+
+	void populateList(unsigned short int listNumber,
+					  Category<PhoneLink> category);
+	void showFile(PhoneLink file);
 
 	QListWidget* lists;
 
@@ -48,6 +51,8 @@ class MainWidget : public QWidget
 	QLineEdit* cell2Edit;
 
 	PhoneDatabase* database;
+
+	int* lastSelection;
 
 };
 

@@ -18,7 +18,7 @@ template<class T>
 		public:
 	CategoryTree(QString rootCategoryName = "");
 
-	Category<T> root() const;
+	Category<T>* root() const;
 
 	void insertCategory(Category<T>& cat, QString path = "/",
 						bool createThePath = false)
@@ -44,9 +44,10 @@ template<class T>
 }
 
 template<class T>
-		inline Category<T> CategoryTree<T>::root() const
+		inline Category<T>* CategoryTree<T>::root() const
 {
-	return *_root;
+	Category<T>* rootCopy = new Category<T>(*_root);
+	return rootCopy;
 }
 
 template<class T>
