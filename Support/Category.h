@@ -16,7 +16,6 @@ template<class T>
 	
 		public:
 	Category(QString name) : _name(name) {}
-	Category(const Category<T>& original);
 
 	void rename(QString name) throw(InvalidArgument);
 
@@ -44,14 +43,6 @@ template<class T>
 };
 
 // Type T must implement bool operator== and method void print(QTextStream&)
-
-template<class T>
-		Category<T>::Category(const Category<T>& original)
-{
-	_name = original.name();
-	_subCategories = QList<Category<T> >(original.subCategories());
-	_dataFiles = QList<T>(original.dataFiles());
-}
 
 template<class T>
 		inline QString Category<T>::name() const

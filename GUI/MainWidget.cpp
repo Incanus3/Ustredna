@@ -96,15 +96,29 @@ void MainWidget::initializeConnections()
 						 this, SLOT(selectionChanged()));
 }
 
+void MainWidget::removeConnections()
+{
+	for(int i = 0; i < listsNumber; i++)
+		QObject::disconnect(&lists[i], SIGNAL(itemSelectionChanged()),
+						 this, SLOT(selectionChanged()));
+}
+
 MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 {
 	lastSelection = new int[listsNumber];
 	lastSelection[0] = 0;
 	for(int i = 1; i < listsNumber; i++)
 		lastSelection[i] = -1;
+
 	initializeWidgets();
 	initializeLayouts();
 	initializeConnections();
+
+	try {
+		database = new PhoneDatabase("seznam.phd");
+		populateList(0, *database->root());
+	} catch(InvalidFile) {}
+
 }
 
 void MainWidget::populateList(unsigned short int listNumber,
@@ -134,8 +148,10 @@ void MainWidget::showFile(PhoneLink file)
 
 void MainWidget::selectionChanged()
 {
-	cout << "***********************************\n" <<
-			"Zacatek selectionChanged" << endl;
+	if(!database)
+		return;
+
+	removeConnections();
 
 	// zjistim, ve kterem listu se zmenil vyber
 	unsigned short changedListNumber;
@@ -151,12 +167,8 @@ void MainWidget::selectionChanged()
 	if(lists[changedListNumber].currentRow() == -1)
 		changedListNumber--;
 
-	cout << "changedListNumber: " << changedListNumber << endl; // DEBUG
-
 	// index nove vybraneho radku
 	int changedRow = lists[changedListNumber].currentRow();
-
-	cout << "changedRow: " << changedRow << endl; // DEBUG
 
 	// aktualizuji posledni ulozeny vyber
 	lastSelection[changedListNumber] = changedRow;
@@ -168,47 +180,26 @@ void MainWidget::selectionChanged()
 		lists[i].clear();
 	}
 
-	if(database)
-	{
-		// najdu kategorii, ktera je v prave zmenenem listu zobrazena
+	// najdu kategorii, ktera je v prave zmenenem listu zobrazena
 
-		Category<PhoneLink>* current = database->root();
+	Category<PhoneLink>* current = database->root();
 
-		cout << "zacinam vyhledavat kategorii, ze ktere byl ucinen vyber" << endl;
+	for(int i = 0; i < changedListNumber; i++)
+		current = &current->subCategories()[lists[i].currentRow()];
 
-		for(int i = 0; i < changedListNumber; i++)
-		{
-			cout << current->name() << endl;
-			cout << "vybiram " << lists[i].currentRow() << ". podkategorii: " <<
-					current->subCategories()[lists[i].currentRow()].name() << endl;
-			current = &current->subCategories()[lists[i].currentRow()];
-		}
+	// extrahuju jeji podkategorie a datove polozky
+	QList<Category<PhoneLink> > categories = current->subCategories();
+	QList<PhoneLink> files = current->dataFiles();
 
-		cout << "current: " << current << endl;
-		cout << "current->name(): " << current->name() << endl;
-		//current->print();
-
-		// extrahuju jeji podkategorie a datove polozky
-		QList<Category<PhoneLink> > categories = current->subCategories();
-		QList<PhoneLink> files = current->dataFiles();
-
-		cout << "categories.count(): " << categories.count() << endl;
-
-		// pokud byla vybrana podkategorie
-		if(changedRow < categories.count())
-			// zobrazim jeji obsah v dalsim listu
-		{
-			cout << "volam populateList()" << endl;
-			populateList(changedListNumber + 1,
-						 current->subCategories()[changedRow]);
-		}
-		else
-			// jinak zobrazim vybranou datovou polozku
-		{
-			cout << "volam showFile()" << endl;
-			showFile(files[changedRow - categories.size()]);
-		}
-	}
+	// pokud byla vybrana podkategorie
+	if(changedRow < categories.count())
+		// zobrazim jeji obsah v dalsim listu
+		populateList(changedListNumber + 1,
+					 current->subCategories()[changedRow]);
+	else
+		// jinak zobrazim vybranou datovou polozku
+		showFile(files[changedRow - categories.size()]);
+	initializeConnections();
 }
 
 void MainWidget::openDatabase()
@@ -219,16 +210,12 @@ void MainWidget::openDatabase()
 							tr("Otevřít soubor se seznamem"), ".",
 							tr("Phone Database Files (*.phd)"));
 
+	cout << path << endl;
+
 	database = new PhoneDatabase(path);
 
 	for(int i = 0; i < listsNumber; i++)
 		lists[i].clear();
 
-	QList<Category<PhoneLink> > categories = database->root()->subCategories();
-	for(int i = 0; i < categories.size(); i++)
-		lists[0].addItem(categories[i].name());
-
-	QList<PhoneLink> files = database->root()->dataFiles();
-	for(int i = 0; i < files.size(); i++)
-		lists[0].addItem(files[i].name);
+	populateList(0, *database->root());
 }

@@ -32,6 +32,8 @@ class MainWidget : public QWidget
 	void initializeLayouts();
 	void initializeConnections();
 
+	void removeConnections();
+
 	void populateList(unsigned short int listNumber,
 					  Category<PhoneLink> category);
 	void showFile(PhoneLink file);
