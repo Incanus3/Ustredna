@@ -118,16 +118,11 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 		database = new PhoneDatabase("seznam.phd");
 		populateList(0, *database->root());
 	} catch(InvalidFile) {}
-
 }
 
 void MainWidget::populateList(unsigned short int listNumber,
 							  Category<PhoneLink> category)
 {
-	cout << endl << "zacatek populateList()" << endl;
-	cout << "listNumber: " << listNumber << endl;
-	cout << "category.name(): " << category.name() << endl;
-
 	QList<Category<PhoneLink> > categories = category.subCategories();
 	for(int i = 0; i < categories.size(); i++)
 		lists[listNumber].addItem(categories[i].name());
@@ -151,6 +146,8 @@ void MainWidget::selectionChanged()
 	if(!database)
 		return;
 
+	// zajistim, aby volani metody clean na listy v tele teto metody
+	// nevolalo opet tuto obsluhu
 	removeConnections();
 
 	// zjistim, ve kterem listu se zmenil vyber
@@ -199,6 +196,7 @@ void MainWidget::selectionChanged()
 	else
 		// jinak zobrazim vybranou datovou polozku
 		showFile(files[changedRow - categories.size()]);
+
 	initializeConnections();
 }
 
@@ -210,12 +208,17 @@ void MainWidget::openDatabase()
 							tr("Otevřít soubor se seznamem"), ".",
 							tr("Phone Database Files (*.phd)"));
 
-	cout << path << endl;
+	if (database)
+		delete database;
 
 	database = new PhoneDatabase(path);
 
+	removeConnections();
+
 	for(int i = 0; i < listsNumber; i++)
 		lists[i].clear();
+
+	initializeConnections();
 
 	populateList(0, *database->root());
 }
