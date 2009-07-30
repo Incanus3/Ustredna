@@ -2,7 +2,7 @@
 #define PHONELINK_H
 
 #include <QString>
-#include "Cout.h"
+//#include "Cout.h"
 
 struct PhoneLink
 {
@@ -20,7 +20,7 @@ struct PhoneLink
 
     operator QString() const;
 
-	void print(QTextStream& stream = cout) const;
+//	void print(QTextStream& stream = cout) const;
 
 	bool operator== (PhoneLink link) const;
 };

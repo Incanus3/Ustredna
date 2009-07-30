@@ -1,7 +1,7 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include <QtGui/QWidget>
+//#include <QtGui/QWidget>
 #include <QtGui/QListWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
@@ -36,7 +36,7 @@ class MainWidget : public QWidget
 
 	void populateList(unsigned short int listNumber,
 					  Category<PhoneLink> category);
-	void showFile(PhoneLink file);
+	void showFile(PhoneLink file, QString department = "");
 
 	QListWidget* lists;
 

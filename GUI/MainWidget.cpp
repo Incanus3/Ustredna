@@ -1,9 +1,9 @@
 #include <QtGui/QBoxLayout>
-#include <QtGui/QMessageBox>
+//#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QList>
 #include "MainWidget.h"
-#include "Cout.h"
+//#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
 const short int MainWidget::listMinimumHeight = 400;
@@ -20,7 +20,7 @@ void MainWidget::initializeWidgets()
 		lists[i].setMinimumHeight(listMinimumHeight);
 	}
 
-	departmentLabel = new QLabel(tr("Oddělení:"));
+	departmentLabel = new QLabel(tr("Post:"));
 	nameLabel = new QLabel(tr("Jméno:"));
 	phonesLabel = new QLabel(tr("Linky:"));
 	cellsLabel = new QLabel(tr("Ručky:"));
@@ -124,16 +124,23 @@ void MainWidget::populateList(unsigned short int listNumber,
 							  Category<PhoneLink> category)
 {
 	QList<Category<PhoneLink> > categories = category.subCategories();
+	QList<PhoneLink> files = category.dataFiles();
+	if(categories.count() == 0 && files.count() == 1)
+	{
+		showFile(files[0], category.name());
+		return;
+	}
+
 	for(int i = 0; i < categories.size(); i++)
 		lists[listNumber].addItem(categories[i].name());
 
-	QList<PhoneLink> files = category.dataFiles();
 	for(int i = 0; i < files.size(); i++)
-		lists[listNumber].addItem(files[i].name);
+		lists[listNumber].addItem(QString("• ") + files[i].name);
 }
 
-void MainWidget::showFile(PhoneLink file)
+void MainWidget::showFile(PhoneLink file, QString department)
 {
+	departmentEdit->setText(department);
 	nameEdit->setText(file.name);
 	phone1Edit->setText(QString("%1").arg(file.phone1));
 	phone2Edit->setText(QString("%1").arg(file.phone2));
@@ -195,7 +202,7 @@ void MainWidget::selectionChanged()
 					 current->subCategories()[changedRow]);
 	else
 		// jinak zobrazim vybranou datovou polozku
-		showFile(files[changedRow - categories.size()]);
+		showFile(files[changedRow - categories.size()], current->name());
 
 	initializeConnections();
 }

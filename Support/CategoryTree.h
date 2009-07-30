@@ -31,8 +31,8 @@ template<class T>
 						bool createThePath = false)
 			throw(ObjectNotFound, InvalidArgument);
 
-	void print(QTextStream& stream = cout,
-			   unsigned short tabs = 0) const;
+//	void print(QTextStream& stream = cout,
+//			   unsigned short tabs = 0) const;
 
 	void clear();
 };
@@ -115,12 +115,12 @@ template<class T>
 	category.addDataFile(data);
 }
 
-template<class T>
-		inline void CategoryTree<T>::print(QTextStream& stream,
-										   unsigned short tabs) const
-{
-	_root->print(stream, tabs);
-}
+//template<class T>
+//		inline void CategoryTree<T>::print(QTextStream& stream,
+//										   unsigned short tabs) const
+//{
+//	_root->print(stream, tabs);
+//}
 
 template<class T>
 		void CategoryTree<T>::clear()

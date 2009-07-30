@@ -1,9 +1,9 @@
 #include <QtGui/QApplication>
 #include <QTextCodec>
 #include "MainWindow.h"
-#include "CategoryTree.h"
-#include "PhoneLink.h"
-#include "Cout.h"
+//#include "CategoryTree.h"
+//#include "PhoneLink.h"
+//#include "Cout.h"
 
 using namespace std;
 

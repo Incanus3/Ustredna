@@ -4,7 +4,7 @@
 #include <QString>
 #include <QList>
 #include <QStringList>
-#include "Cout.h"
+//#include "Cout.h"
 #include "Exceptions.h"
 
 template<class T>
@@ -39,7 +39,7 @@ template<class T>
 
 	QString name() const;
 	operator QString() const;
-	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+//	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
 };
 
 // Type T must implement bool operator== and method void print(QTextStream&)
@@ -163,29 +163,29 @@ template<class T>
 	return _name;
 }
 
-template<class T>
-		void Category<T>::print(QTextStream& stream, unsigned short tabs) const
-{
-	for(int i = 0; i < tabs; i++)
-		stream << "\t";
-	stream << _name << endl;
-	QListIterator<Category> subCatsIter(_subCategories);
-	while(subCatsIter.hasNext())
-		subCatsIter.next().print(stream, tabs + 1);
-	if(!_subCategories.empty() && !_dataFiles.empty())
-	{
-		for(int i = 0; i < tabs + 1; i++)
-			stream << "\t";
-		stream << "--------" << endl;
-	}
-	QListIterator<T> dataFilesIter(_dataFiles);
-	while(dataFilesIter.hasNext())
-	{
-		for(int i = 0; i < tabs + 1; i++)
-			stream << "\t";
-		dataFilesIter.next().print(stream);
-		stream << endl;
-	}
-}
+//template<class T>
+//		void Category<T>::print(QTextStream& stream, unsigned short tabs) const
+//{
+//	for(int i = 0; i < tabs; i++)
+//		stream << "\t";
+//	stream << _name << endl;
+//	QListIterator<Category> subCatsIter(_subCategories);
+//	while(subCatsIter.hasNext())
+//		subCatsIter.next().print(stream, tabs + 1);
+//	if(!_subCategories.empty() && !_dataFiles.empty())
+//	{
+//		for(int i = 0; i < tabs + 1; i++)
+//			stream << "\t";
+//		stream << "--------" << endl;
+//	}
+//	QListIterator<T> dataFilesIter(_dataFiles);
+//	while(dataFilesIter.hasNext())
+//	{
+//		for(int i = 0; i < tabs + 1; i++)
+//			stream << "\t";
+//		dataFilesIter.next().print(stream);
+//		stream << endl;
+//	}
+//}
 
 #endif // CATEGORY_H
