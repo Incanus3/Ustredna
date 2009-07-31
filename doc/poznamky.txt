@@ -1,0 +1,10 @@
+	Nove nabyte poznatky:
+implementaci metod templatovych trid piseme do hlavickoveho souboru,
+	ne do extra cpp
+operator == (napr Category::operator==(Category cat)) nesmi brat jako parametr
+	referenci, nemuze byt inline, pokud neni trida templatova.
+konstruktor nesmi byt inline, pokud neni trida templatova
+neni dobry napad (prekvapive) predavat funkci, ktera bere referenci, na miste
+	vytvoreny vestaveny	typ - napr. void funkce(int& a); funkce(3);
+
+pri nacitani databaze zatim nejsou podporovany carky v retezcich - jsou rozpoznany jako konec datove polozky, i kdyz jsou v uvozovkach
