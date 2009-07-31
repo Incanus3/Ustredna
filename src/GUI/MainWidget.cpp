@@ -3,6 +3,7 @@
 #include <QtGui/QFileDialog>
 #include <QList>
 #include "MainWidget.h"
+#include "FindDialog.h"
 //#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
@@ -232,5 +233,9 @@ void MainWidget::openDatabase()
 
 void MainWidget::findFile()
 {
+	QDialog* findDialog = new FindDialog;
 
+	findDialog->show();
+	findDialog->raise();
+	findDialog->activateWindow();
 }
