@@ -132,11 +132,14 @@ void MainWidget::populateList(unsigned short int listNumber,
 		return;
 	}
 
-	for(int i = 0; i < categories.size(); i++)
-		lists[listNumber].addItem(categories[i].name());
+	short int counter = 1;
 
+	for(int i = 0; i < categories.size(); i++)
+		lists[listNumber].addItem(QString("%1: %2").arg(counter++)
+								  .arg(categories[i].name()));
 	for(int i = 0; i < files.size(); i++)
-		lists[listNumber].addItem(QString("• ") + files[i].name);
+		lists[listNumber].addItem(QString("• %1: %2").arg(counter++)
+								  .arg(files[i].name));
 }
 
 void MainWidget::showFile(PhoneLink file, QString department)

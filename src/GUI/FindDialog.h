@@ -5,6 +5,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QListWidget>
+#include <QtGui/QRadioButton>
 
 class FindDialog : public QDialog
 {
@@ -19,6 +20,8 @@ class FindDialog : public QDialog
 		private:
 	QLineEdit* findEdit;
 	QPushButton* findButton;
+	QRadioButton* nameRadio;
+	QRadioButton* departmentRadio;
 	QListWidget* foundList;
 };
 
