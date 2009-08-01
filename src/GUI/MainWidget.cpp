@@ -1,5 +1,4 @@
 #include <QtGui/QBoxLayout>
-//#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QList>
 #include "MainWidget.h"
@@ -118,7 +117,7 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 	try {
 		database = new PhoneDatabase("seznam.phd");
 		populateList(0, *database->root());
-	} catch(InvalidFile) {}
+	} catch(InvalidFile) { database = NULL; }
 }
 
 void MainWidget::populateList(unsigned short int listNumber,
@@ -138,7 +137,7 @@ void MainWidget::populateList(unsigned short int listNumber,
 		lists[listNumber].addItem(QString("%1: %2").arg(counter++)
 								  .arg(categories[i].name()));
 	for(int i = 0; i < files.size(); i++)
-		lists[listNumber].addItem(QString("• %1: %2").arg(counter++)
+		lists[listNumber].addItem(QString(tr("• %1: %2")).arg(counter++)
 								  .arg(files[i].name));
 }
 
@@ -213,6 +212,8 @@ void MainWidget::selectionChanged()
 
 void MainWidget::openDatabase()
 {
+	removeConnections();
+
 	QString path =
 			QFileDialog::
 			getOpenFileName(this,
@@ -223,8 +224,6 @@ void MainWidget::openDatabase()
 		delete database;
 
 	database = new PhoneDatabase(path);
-
-	removeConnections();
 
 	for(int i = 0; i < listsNumber; i++)
 		lists[i].clear();
