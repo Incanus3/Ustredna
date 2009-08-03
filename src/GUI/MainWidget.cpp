@@ -1,8 +1,8 @@
 #include <QtGui/QBoxLayout>
 #include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 #include <QList>
 #include "MainWidget.h"
-#include "FindDialog.h"
 //#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
@@ -220,10 +220,20 @@ void MainWidget::openDatabase()
 							tr("Otevřít soubor se seznamem"), ".",
 							tr("Phone Database Files (*.phd)"));
 
-	if (database)
-		delete database;
+	if(path == "")
+		return;
 
-	database = new PhoneDatabase(path);
+	PhoneDatabase* dbPtr = database;
+
+	try{
+		database = new PhoneDatabase(path);
+	} catch(InvalidFile) {
+		database = dbPtr;
+		return;
+	}
+
+	if(dbPtr)
+		delete dbPtr;
 
 	for(int i = 0; i < listsNumber; i++)
 		lists[i].clear();
@@ -235,9 +245,13 @@ void MainWidget::openDatabase()
 
 void MainWidget::findFile()
 {
-	QDialog* findDialog = new FindDialog;
+	if(database)
+	{
+		FindDialog findDialog(database);
 
-	findDialog->show();
-	findDialog->raise();
-	findDialog->activateWindow();
+		findDialog.exec();
+	}
+	else
+		QMessageBox::warning(this, "Nekritická chyba", "Nebyla načtena databáze,"
+							 "\nnení tedy v čem vyhledávat");
 }

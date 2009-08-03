@@ -40,3 +40,27 @@ void PhoneDatabase::loadDatabase(QString path)
 					   splitLine[0], true);
 	}
 }
+
+QList<PhoneLink>& PhoneDatabase::
+		findDataFiles(QString namePart,
+					  Category<PhoneLink>& startCategory)
+{
+	QList<PhoneLink>* list = new QList<PhoneLink>;
+	QList<Category<PhoneLink> >& subCats = startCategory.subCategories();
+	QList<PhoneLink>& dtFiles = startCategory.dataFiles();
+
+	for(int i = 0; i < subCats.count(); i++)
+		list->append(findDataFiles(namePart, subCats[i]));
+
+	for(int i = 0; i < dtFiles.count(); i++)
+		if(dtFiles[i].name.contains(namePart, Qt::CaseInsensitive))
+			list->append(dtFiles[i]);
+
+	return *list;
+}
+
+QList<PhoneLink>& PhoneDatabase::
+		findDataFiles(QString namePart)
+{
+	return findDataFiles(namePart, *root());
+}

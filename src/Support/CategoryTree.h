@@ -8,17 +8,17 @@ template<class T>
 {
 	Category<T>* _root;
 
-	Category<T>& findDirectory(QString path)
-			throw(ObjectNotFound);
-	T& findDataFile(QString path, T dataFile)
-			throw(ObjectNotFound);
-
 	Category<T>& createPath(QString path);
 
 		public:
 	CategoryTree(QString rootCategoryName = "");
 
 	Category<T>* root() const;
+
+	Category<T>& getDirectory(QString path)
+			throw(ObjectNotFound);
+	T& getDataFile(QString path, T dataFile)
+			throw(ObjectNotFound);
 
 	void insertCategory(Category<T>& cat, QString path = "/",
 						bool createThePath = false)
@@ -30,6 +30,9 @@ template<class T>
 	void insertDataFile(T& data, QString path = "/",
 						bool createThePath = false)
 			throw(ObjectNotFound, InvalidArgument);
+
+	QList<T>& findDataFile(T& data)
+			throw(ObjectNotFound);
 
 //	void print(QTextStream& stream = cout,
 //			   unsigned short tabs = 0) const;
@@ -51,7 +54,7 @@ template<class T>
 }
 
 template<class T>
-		Category<T>& CategoryTree<T>::findDirectory(QString path)
+		Category<T>& CategoryTree<T>::getDirectory(QString path)
 		throw(ObjectNotFound)
 {
 	Category<T>* current = _root;
@@ -59,7 +62,7 @@ template<class T>
 	for(int i = 0; i < splitPath.size(); i++)
 	{
 		try {
-			current = &current->findSubCategory(splitPath[i]);
+			current = &current->getSubCategory(splitPath[i]);
 		} catch(ObjectNotFound& expt) {
 			throw ObjectNotFound(QString("invalid path:\n")
 								 + expt.what());
@@ -69,11 +72,11 @@ template<class T>
 }
 
 template<class T>
-		T& CategoryTree<T>::findDataFile(QString path, T dataFile)
+		T& CategoryTree<T>::getDataFile(QString path, T dataFile)
 		throw(ObjectNotFound)
 {
-	Category<T>* directory = findDirectory(path);
-	return directory->findDataFile(dataFile);
+	Category<T>* directory = getDirectory(path);
+	return directory->getDataFile(dataFile);
 }
 
 template<class T>
@@ -84,7 +87,7 @@ template<class T>
 	for(int i = 0; i < splitPath.size(); i++)
 	{
 		current->addSubCategory(splitPath[i], false);
-		current = &current->findSubCategory(splitPath[i]);
+		current = &current->getSubCategory(splitPath[i]);
 	}
 	return *current;
 }
@@ -94,7 +97,7 @@ template<class T>
 											 bool createThePath)
 		throw(ObjectNotFound)
 {
-	Category<T>& category = createThePath ? createPath(path) : findDirectory(path);
+	Category<T>& category = createThePath ? createPath(path) : getDirectory(path);
 	category.addSubCategory(cat);
 }
 
@@ -111,8 +114,14 @@ template<class T>
 											 bool createThePath)
 		throw(ObjectNotFound, InvalidArgument)
 {
-	Category<T>& category = createThePath ? createPath(path) : findDirectory(path);
+	Category<T>& category = createThePath ? createPath(path) : getDirectory(path);
 	category.addDataFile(data);
+}
+
+template<class T>
+		QList<T>& CategoryTree<T>::findDataFile(T& data) throw(ObjectNotFound)
+{
+	return _root->findDataFile(data);
 }
 
 //template<class T>

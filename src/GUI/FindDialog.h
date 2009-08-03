@@ -6,13 +6,15 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QListWidget>
 #include <QtGui/QRadioButton>
+#include <QList>
+#include "Database.h"
 
 class FindDialog : public QDialog
 {
 	Q_OBJECT
 
 		public:
-	FindDialog(QWidget* parent = 0);
+	FindDialog(PhoneDatabase* db, QWidget* parent = 0);
 
 		private slots:
 	void findClicked();
@@ -23,6 +25,8 @@ class FindDialog : public QDialog
 	QRadioButton* nameRadio;
 	QRadioButton* departmentRadio;
 	QListWidget* foundList;
+
+	PhoneDatabase* database;
 };
 
 #endif // FINDDIALOG_H

@@ -11,6 +11,10 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 
 		public:
 	PhoneDatabase(QString path, QString name = "Nemocnice") throw(InvalidFile);
+
+	QList<PhoneLink>& findDataFiles(QString namePart);
+	QList<PhoneLink>& findDataFiles(QString namePart,
+									Category<PhoneLink>& startCategory);
 };
 
 #endif // DATABASE_H

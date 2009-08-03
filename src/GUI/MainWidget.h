@@ -7,6 +7,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QAction>
 #include "Database.h"
+#include "FindDialog.h"
 
 class MainWidget : public QWidget
 {
