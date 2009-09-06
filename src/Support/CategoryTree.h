@@ -2,6 +2,7 @@
 #define CATEGORYTREE_H
 
 #include "Category.h"
+#include <QTextStream>
 
 template<class T>
 		class CategoryTree

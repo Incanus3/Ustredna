@@ -23,7 +23,9 @@ class MainWindow : public QMainWindow
 
 	QAction* openAction;
 	QAction* findAction;
+	QAction* settingsAction;
 	QAction* aboutQtAction;
+	QAction* exportAction;
 
 	QMenu* fileMenu;
 	QMenu* editMenu;

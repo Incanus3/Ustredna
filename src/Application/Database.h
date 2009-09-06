@@ -4,6 +4,8 @@
 #include "CategoryTree.h"
 #include "PhoneLink.h"
 
+typedef Category<PhoneLink> PhoneCategory;
+
 class PhoneDatabase : public CategoryTree<PhoneLink>
 {
 	void loadDatabase(QString path)
@@ -14,7 +16,11 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 
 	QList<PhoneLink>& findDataFiles(QString namePart);
 	QList<PhoneLink>& findDataFiles(QString namePart,
-									Category<PhoneLink>& startCategory);
+									PhoneCategory& startCategory);
+
+	void toHTML(PhoneCategory& cat, QTextStream& htmlStream, short int depth = 0);
+	void toHTML(QTextStream& htmlStream);
+	void printToHTML(QString path);
 };
 
 #endif // DATABASE_H

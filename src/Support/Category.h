@@ -10,6 +10,7 @@
 template<class T>
 		class Category
 {
+		protected:
 	QString _name;
 	QList<Category> _subCategories;
 	QList<T> _dataFiles;
@@ -19,7 +20,7 @@ template<class T>
 
 	void rename(QString name) throw(InvalidArgument);
 
-	QList<Category>& subCategories() const;
+	QList<Category<T> >& subCategories() const;
 	QList<T>& dataFiles() const;
 
 	void addSubCategory(Category<T>& subCat, bool alreadyThereError = true)
@@ -31,8 +32,8 @@ template<class T>
 	void addDataFile(T data, bool alreadythereError = true);
 	void removeDataFile(T data);
 
-	Category& getSubCategory(Category& cat) throw(ObjectNotFound);
-	Category& getSubCategory(QString name) throw(ObjectNotFound);
+	Category<T>& getSubCategory(Category<T>& cat) throw(ObjectNotFound);
+	Category<T>& getSubCategory(QString name) throw(ObjectNotFound);
 	T& getDataFile(T file) throw(ObjectNotFound);
 
 	QList<T>& findDataFiles(T& data);

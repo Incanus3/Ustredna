@@ -8,6 +8,7 @@
 #include <QtGui/QAction>
 #include "Database.h"
 #include "FindDialog.h"
+#include "Exceptions.h"
 
 class MainWidget : public QWidget
 {
@@ -19,6 +20,8 @@ class MainWidget : public QWidget
 		public slots:
 	void openDatabase();
 	void findFile();
+	void editSettings();
+	void exportDatabase();
 
 		private slots:
 	void selectionChanged();
@@ -29,12 +32,15 @@ class MainWidget : public QWidget
 	static const short int listsNumber;
 	static const short int numberEditWidth;
 	static const short int textEditMinWidth;
+	QString databasePath;
 
 	void initializeWidgets();
 	void initializeLayouts();
 	void initializeConnections();
 
 	void removeConnections();
+
+	void loadConfig() throw (InvalidFile);
 
 	void populateList(unsigned short int listNumber,
 					  Category<PhoneLink> category);

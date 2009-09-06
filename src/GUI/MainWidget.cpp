@@ -1,8 +1,11 @@
 #include <QtGui/QBoxLayout>
 #include <QtGui/QFileDialog>
+#include <QFile>
+#include <QTextStream>
 #include <QtGui/QMessageBox>
 #include <QList>
 #include "MainWidget.h"
+#include "SettingsDialog.h"
 //#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
@@ -96,6 +99,19 @@ void MainWidget::initializeConnections()
 						 this, SLOT(selectionChanged()));
 }
 
+void MainWidget::loadConfig() throw(InvalidFile)
+{
+	QFile configFile(".config");
+	if(!configFile.exists())
+		throw InvalidFile("Can't open configuration file");
+	configFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+	QTextStream configStream(&configFile);
+	databasePath = configStream.readLine();
+
+	configFile.close();
+}
+
 void MainWidget::removeConnections()
 {
 	for(int i = 0; i < listsNumber; i++)
@@ -115,7 +131,11 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 	initializeConnections();
 
 	try {
-		database = new PhoneDatabase("seznam.phd");
+		loadConfig();
+	} catch(InvalidFile) { databasePath = "seznam.phd"; }
+
+	try {
+		database = new PhoneDatabase(databasePath);
 		populateList(0, *database->root());
 	} catch(InvalidFile) { database = NULL; }
 }
@@ -189,23 +209,23 @@ void MainWidget::selectionChanged()
 
 	// najdu kategorii, ktera je v prave zmenenem listu zobrazena
 
-	Category<PhoneLink>* current = database->root();
+	Category<PhoneLink>& current = *database->root();
 
 	for(int i = 0; i < changedListNumber; i++)
-		current = &current->subCategories()[lists[i].currentRow()];
+		current = current.subCategories()[lists[i].currentRow()];
 
 	// extrahuju jeji podkategorie a datove polozky
-	QList<Category<PhoneLink> > categories = current->subCategories();
-	QList<PhoneLink> files = current->dataFiles();
+	QList<Category<PhoneLink> > categories = current.subCategories();
+	QList<PhoneLink> files = current.dataFiles();
 
 	// pokud byla vybrana podkategorie
 	if(changedRow < categories.count())
 		// zobrazim jeji obsah v dalsim listu
 		populateList(changedListNumber + 1,
-					 current->subCategories()[changedRow]);
+					 current.subCategories()[changedRow]);
 	else
 		// jinak zobrazim vybranou datovou polozku
-		showFile(files[changedRow - categories.size()], current->name());
+		showFile(files[changedRow - categories.size()], current.name());
 
 	initializeConnections();
 }
@@ -252,6 +272,28 @@ void MainWidget::findFile()
 		findDialog.exec();
 	}
 	else
-		QMessageBox::warning(this, "Nekritická chyba", "Nebyla načtena databáze,"
-							 "\nnení tedy v čem vyhledávat");
+		QMessageBox::warning(this, "Nekritická chyba",
+							 "Nebyla načtena databáze, \n"
+							 "není tedy v čem vyhledávat");
+}
+
+void MainWidget::editSettings()
+{
+	SettingsDialog settingsDialog(databasePath);
+
+	settingsDialog.exec();
+}
+
+void MainWidget::exportDatabase()
+{
+	if(database)
+	{
+		QString path =
+			QFileDialog::
+			getSaveFileName(this,
+							tr("Exportovat seznam do HTML"), ".",
+							tr("HTML soubor (*.html)"));
+
+		database->printToHTML(path);
+	}
 }

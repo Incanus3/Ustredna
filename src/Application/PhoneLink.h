@@ -2,6 +2,7 @@
 #define PHONELINK_H
 
 #include <QString>
+#include <QTextStream>
 //#include "Cout.h"
 
 struct PhoneLink
@@ -23,6 +24,9 @@ struct PhoneLink
 //	void print(QTextStream& stream = cout) const;
 
 	bool operator== (PhoneLink link) const;
+
+	void toHTML(QTextStream& htmlStream);
+	static void headToHTML(QTextStream& htmlStream);
 };
 
 #endif // PHONELINK_H

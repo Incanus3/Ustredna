@@ -64,3 +64,43 @@ QList<PhoneLink>& PhoneDatabase::
 {
 	return findDataFiles(namePart, *root());
 }
+
+void PhoneDatabase::toHTML(PhoneCategory& cat, QTextStream& htmlStream,
+						   short int depth)
+{
+	if(depth)
+		htmlStream << QString("<h%1>%2</h%1>\n").arg(depth).arg(cat.name());
+	QList<PhoneLink>& dataFiles = cat.dataFiles();
+	if(dataFiles.size())
+	{
+		htmlStream << "<table border=\"1\">\n";
+		for(int i = 0; i < dataFiles.size(); i++)
+			dataFiles[i].toHTML(htmlStream);
+		htmlStream << "</table>\n";
+	}
+
+	QList<PhoneCategory>& subCats = cat.subCategories();
+	for(int i = 0; i < subCats.size(); i++)
+		toHTML(subCats[i], htmlStream, depth + 1);
+}
+
+void PhoneDatabase::printToHTML(QString path)
+{
+	QFile outFile(path);
+	outFile.remove();
+	outFile.open(QIODevice::WriteOnly | QIODevice::Text);
+	QTextStream outStream(&outFile);
+	outStream.setCodec("UTF-8");
+
+	outStream << QString("<html>\n<head>\n"
+			"<meta http-equiv=\"Content-Language\" content=\"cs\">\n"
+			"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
+			"<title>Telefonní seznam Městské nemocnice v Litoměřicích</title>\n"
+			"</head>\n"
+			"<body>\n"
+			"<h1>Telefonní seznam Městské nemocnice v Litoměřicích</h1>\n");
+
+	toHTML(*root(), outStream);
+
+	outStream << "</body>\n</html>";
+}

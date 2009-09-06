@@ -32,3 +32,22 @@ PhoneLink::operator QString() const
 {
 	return name;
 }
+
+void PhoneLink::toHTML(QTextStream& htmlStream)
+{
+	htmlStream << QString("<tr>\n"
+						  "<td>%1</td>\n"
+						  "<td>%2, %3</td>\n"
+						  "<td>%4, %5</td>\n"
+						  "</tr>\n").arg(name).arg(phone1).arg(phone2)
+			.arg(cell1).arg(cell2);
+}
+
+/* static */ void PhoneLink::headToHTML(QTextStream& htmlStream)
+{
+	htmlStream << QString("<tr>\n"
+						  "<th>Jméno</th>\n"
+						  "<th>Linky</th>\n"
+						  "<th>Ručky</th>\n"
+						  "</tr>\n");
+}
