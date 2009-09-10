@@ -157,13 +157,13 @@ void MainWidget::populateList(unsigned short int listNumber,
 		lists[listNumber].addItem(QString("%1: %2").arg(counter++)
 								  .arg(categories[i].name()));
 	for(int i = 0; i < files.size(); i++)
-		lists[listNumber].addItem(QString(tr("• %1: %2")).arg(counter++)
-								  .arg(files[i].name));
+		lists[listNumber].addItem(QString(tr("%1: %2")).arg(counter++)
+								  .arg(files[i].department));
 }
 
 void MainWidget::showFile(PhoneLink file, QString department)
 {
-	departmentEdit->setText(department);
+	departmentEdit->setText(file.department);
 	nameEdit->setText(file.name);
 	phone1Edit->setText(QString("%1").arg(file.phone1));
 	phone2Edit->setText(QString("%1").arg(file.phone2));

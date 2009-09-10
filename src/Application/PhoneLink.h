@@ -7,12 +7,12 @@
 
 struct PhoneLink
 {
-//	QString department;
+	QString department;
 	QString name;
 	unsigned short phone1, phone2, cell1, cell2;
 
 	PhoneLink(
-//			QString department,
+			QString department,
 			QString name = "",
 				unsigned short phone1 = 0,
 				unsigned short cell1 = 0,

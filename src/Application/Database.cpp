@@ -29,14 +29,15 @@ void PhoneDatabase::loadDatabase(QString path)
 		lineNumber++;
 		line = dataStream.readLine();
 		splitLine = QString(line).remove('"').split(",");
-		if(splitLine.size() != 6)
+		if(splitLine.size() != 7)
 			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
 							  .arg(lineNumber).arg(line).arg(path)));
 		insertDataFile(*(new PhoneLink(splitLine[1],
-									   splitLine[2].toUShort(),
+									   splitLine[2],
 									   splitLine[3].toUShort(),
 									   splitLine[4].toUShort(),
-									   splitLine[5].toUShort())),
+									   splitLine[5].toUShort(),
+									   splitLine[6].toUShort())),
 					   splitLine[0], true);
 	}
 }
@@ -74,6 +75,7 @@ void PhoneDatabase::toHTML(PhoneCategory& cat, QTextStream& htmlStream,
 	if(dataFiles.size())
 	{
 		htmlStream << "<table border=\"1\">\n";
+		PhoneLink::headToHTML(htmlStream);
 		for(int i = 0; i < dataFiles.size(); i++)
 			dataFiles[i].toHTML(htmlStream);
 		htmlStream << "</table>\n";
