@@ -10,6 +10,14 @@ PhoneDatabase::PhoneDatabase(QString path, QString name)
 	loadDatabase(path);
 }
 
+const QString PhoneDatabase::separator = ";";
+
+QList<PhoneLink>& PhoneDatabase::phoneList() const
+{
+	QList<PhoneLink>* phoneListCopy = new QList<PhoneLink>(_phoneList);
+	return *phoneListCopy;
+}
+
 void PhoneDatabase::loadDatabase(QString path)
 		throw(InvalidFile)
 {
@@ -28,17 +36,18 @@ void PhoneDatabase::loadDatabase(QString path)
 	{
 		lineNumber++;
 		line = dataStream.readLine();
-		splitLine = QString(line).remove('"').split(",");
+		splitLine = QString(line).remove('"').split(separator);
 		if(splitLine.size() != 7)
 			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
 							  .arg(lineNumber).arg(line).arg(path)));
-		insertDataFile(*(new PhoneLink(splitLine[1],
-									   splitLine[2],
-									   splitLine[3].toUShort(),
-									   splitLine[4].toUShort(),
-									   splitLine[5].toUShort(),
-									   splitLine[6].toUShort())),
-					   splitLine[0], true);
+		PhoneLink* newLink = new PhoneLink(splitLine[1],
+										   splitLine[2],
+										   splitLine[3].toUShort(),
+										   splitLine[4].toUShort(),
+										   splitLine[5].toUShort(),
+										   splitLine[6].toUShort());
+//		_phoneList.append(*newLink);
+		insertDataFile(*newLink, splitLine[0], true);
 	}
 }
 
@@ -66,11 +75,25 @@ QList<PhoneLink>& PhoneDatabase::
 	return findDataFiles(namePart, *root());
 }
 
+void PhoneDatabase::insertDataFile(PhoneLink& data, QString path,
+								   bool createThePath)
+throw(ObjectNotFound, InvalidArgument)
+{
+	CategoryTree<PhoneLink>::insertDataFile(data, path, createThePath);
+	_phoneList.append(data);
+}
+
+void PhoneDatabase::removeDataFile(PhoneLink& data)
+{
+	CategoryTree<PhoneLink>::removeDataFile(data);
+	_phoneList.removeAll(data);
+}
+
 void PhoneDatabase::toHTML(PhoneCategory& cat, QTextStream& htmlStream,
 						   short int depth)
 {
 	if(depth)
-		htmlStream << QString("<h%1>%2</h%1>\n").arg(depth).arg(cat.name());
+		htmlStream << QString("<h%1>%2</h%1>\n").arg(depth + 1).arg(cat.name());
 	QList<PhoneLink>& dataFiles = cat.dataFiles();
 	if(dataFiles.size())
 	{

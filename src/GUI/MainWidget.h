@@ -22,6 +22,7 @@ class MainWidget : public QWidget
 	void findFile();
 	void editSettings();
 	void exportDatabase();
+	void viewPhoneList();
 
 		private slots:
 	void selectionChanged();
@@ -44,7 +45,7 @@ class MainWidget : public QWidget
 
 	void populateList(unsigned short int listNumber,
 					  Category<PhoneLink> category);
-	void showFile(PhoneLink file, QString department = "");
+	void showFile(PhoneLink file);
 
 	QListWidget* lists;
 

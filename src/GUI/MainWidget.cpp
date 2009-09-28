@@ -4,8 +4,10 @@
 #include <QTextStream>
 #include <QtGui/QMessageBox>
 #include <QList>
+#include <QStringList>
 #include "MainWidget.h"
 #include "SettingsDialog.h"
+#include "PhoneListWindow.h"
 //#include "Cout.h"
 
 const short int MainWidget::listMinimumWidth = 160;
@@ -147,8 +149,8 @@ void MainWidget::populateList(unsigned short int listNumber,
 	QList<PhoneLink> files = category.dataFiles();
 	if(categories.count() == 0 && files.count() == 1)
 	{
-		showFile(files[0], category.name());
-		return;
+		showFile(files[0]);
+//		return;
 	}
 
 	short int counter = 1;
@@ -161,7 +163,7 @@ void MainWidget::populateList(unsigned short int listNumber,
 								  .arg(files[i].department));
 }
 
-void MainWidget::showFile(PhoneLink file, QString department)
+void MainWidget::showFile(PhoneLink file)
 {
 	departmentEdit->setText(file.department);
 	nameEdit->setText(file.name);
@@ -208,7 +210,6 @@ void MainWidget::selectionChanged()
 	}
 
 	// najdu kategorii, ktera je v prave zmenenem listu zobrazena
-
 	Category<PhoneLink>& current = *database->root();
 
 	for(int i = 0; i < changedListNumber; i++)
@@ -225,7 +226,7 @@ void MainWidget::selectionChanged()
 					 current.subCategories()[changedRow]);
 	else
 		// jinak zobrazim vybranou datovou polozku
-		showFile(files[changedRow - categories.size()], current.name());
+		showFile(files[changedRow - categories.size()]);
 
 	initializeConnections();
 }
@@ -296,4 +297,18 @@ void MainWidget::exportDatabase()
 
 		database->printToHTML(path);
 	}
+}
+
+void MainWidget::viewPhoneList()
+{
+	if(database)
+	{
+		PhoneListWindow* phoneListWindow = new PhoneListWindow(database);
+
+		phoneListWindow->show();
+	}
+	else
+		QMessageBox::warning(this, "Nekritická chyba",
+							 "Nebyla načtena databáze,\n"
+							 "nemohu tedy zobrazit seznam linek");
 }

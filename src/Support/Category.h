@@ -10,39 +10,65 @@
 template<class T>
 		class Category
 {
-		protected:
-	QString _name;
-	QList<Category> _subCategories;
-	QList<T> _dataFiles;
-	
 		public:
+	//! konstruktor třídy
 	Category(QString name) : _name(name) {}
 
+	//! změní jméno třídy
 	void rename(QString name) throw(InvalidArgument);
 
+	//! vrací kopii seznamu podkategorií
 	QList<Category<T> >& subCategories() const;
+	//! vrací kopii seznamu datových souborů
 	QList<T>& dataFiles() const;
 
+	//! přidá novou podkategorii subCat
 	void addSubCategory(Category<T>& subCat, bool alreadyThereError = true)
 			throw(InvalidArgument);
+	//! vytvoří novou podkategorii se jménem name
 	void addSubCategory(QString name, bool alreadyThereError = true)
 			throw(InvalidArgument);
+	//! odstraní podkategorii
 	void removeSubCategory(Category<T>& subCat);
 
+	//! přidá datový soubor
 	void addDataFile(T data, bool alreadythereError = true);
+	//! odstraní datový soubor
 	void removeDataFile(T data);
+	//! odstraní datový soubor i ze všech podkategorií
+	void removeDataFileRecursively(T data);
 
+	//! vyhledá v seznamu podkategorií kategorii cat (pomocí operátoru porovnání)
+	//! a vrátí ji
 	Category<T>& getSubCategory(Category<T>& cat) throw(ObjectNotFound);
+	//! vyhledá v seznamu podkategorií kategorii s názvem name a vrátí ji
 	Category<T>& getSubCategory(QString name) throw(ObjectNotFound);
+	//! vyhledá v seznamu datových souborů soubor file (pomocí operátoru porovnání)
+	//! a vrátí jej
 	T& getDataFile(T file) throw(ObjectNotFound);
 
+	//! rekurzivně vyhledá všechny datové soubory ==eqivalentní s data v seznamu
+	//! souborů i v podkategoriích a vrátí je v QListu
 	QList<T>& findDataFiles(T& data);
 
+	//! operátor porovnání, kategorie jsou ==eqivalentní, pokud se rovná name
 	bool operator== (Category cat) const;
 
+	//! vrací jméno kategorie
 	QString name() const;
+
+	//! operátor implicitního přetypování na QString (vrací jméno kategorie)
 	operator QString() const;
+
 //	void print(QTextStream& stream = cout, unsigned short tabs = 0) const;
+
+			protected:
+	//! jméno kategorie
+	QString _name;
+	//! seznam podkategorií
+	QList<Category> _subCategories;
+	//! seznam datových souborů
+	QList<T> _dataFiles;
 };
 
 // Type T must implement bool operator== and method void print(QTextStream&)
@@ -126,6 +152,17 @@ template<class T>
 		inline void Category<T>::removeDataFile(T data)
 {
 	_dataFiles.removeAll(data);
+}
+
+template<class T>
+		void Category<T>::removeDataFileRecursively(T data)
+{
+	removeDataFile(data);
+//	foreach(Category<T>& subCat, _subCategories)
+//		subCat.removeDataFileRecursively(data);
+	QMutableListIterator<Category<T> > subCat(_subCategories);
+	while (subCat.hasNext())
+		subCat.next().removeDataFileRecursively(data);
 }
 
 template<class T>

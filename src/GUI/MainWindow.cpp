@@ -40,6 +40,11 @@ void MainWindow::createActions()
 	QObject::connect(settingsAction, SIGNAL(triggered()),
 					 mainWidget, SLOT(editSettings()));
 
+	viewPhoneListAction = new QAction(tr("&Zobrazit seznam linek..."), this);
+	viewPhoneListAction->setIcon(QIcon(":/images/spreadsheet.svg"));
+	QObject::connect(viewPhoneListAction, SIGNAL(triggered()),
+					 mainWidget, SLOT(viewPhoneList()));
+
 	aboutQtAction = new QAction(tr("O toolkitu &Qt"), this);
 	aboutQtAction->setIcon(QIcon(":/images/qt.png"));
 	aboutQtAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
@@ -55,6 +60,8 @@ void MainWindow::createMenus()
 	editMenu = menuBar()->addMenu(tr("&Upravit"));
 	editMenu->addAction(findAction);
 	editMenu->addAction(settingsAction);
+	viewMenu = menuBar()->addMenu(tr("&Zobrazit"));
+	viewMenu->addAction(viewPhoneListAction);
 	helpMenu = menuBar()->addMenu(tr("&Nápověda"));
 	helpMenu->addAction(aboutQtAction);
 }

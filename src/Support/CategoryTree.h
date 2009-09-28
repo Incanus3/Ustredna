@@ -32,6 +32,8 @@ template<class T>
 						bool createThePath = false)
 			throw(ObjectNotFound, InvalidArgument);
 
+	void removeDataFile(T& data);
+
 	QList<T>& findDataFile(T& data)
 			throw(ObjectNotFound);
 
@@ -117,6 +119,12 @@ template<class T>
 {
 	Category<T>& category = createThePath ? createPath(path) : getDirectory(path);
 	category.addDataFile(data);
+}
+
+template<class T>
+		void CategoryTree<T>::removeDataFile(T& data)
+{
+	_root->removeDataFileRecursively(data);
 }
 
 template<class T>

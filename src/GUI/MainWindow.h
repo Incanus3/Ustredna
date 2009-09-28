@@ -22,13 +22,15 @@ class MainWindow : public QMainWindow
 	MainWidget* mainWidget;
 
 	QAction* openAction;
+	QAction* exportAction;
 	QAction* findAction;
 	QAction* settingsAction;
+	QAction* viewPhoneListAction;
 	QAction* aboutQtAction;
-	QAction* exportAction;
 
 	QMenu* fileMenu;
 	QMenu* editMenu;
+	QMenu* viewMenu;
 	QMenu* helpMenu;
 
 	QToolBar* mainToolBar;
