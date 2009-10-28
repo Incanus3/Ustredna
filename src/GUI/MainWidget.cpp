@@ -101,6 +101,17 @@ void MainWidget::initializeConnections()
 						 this, SLOT(selectionChanged()));
 }
 
+void MainWidget::resetLists()
+{
+	removeConnections();
+
+	for(int i = 0; i < listsNumber; i++)
+		lists[i].clear();
+
+	initializeConnections();
+	selectionChanged();
+}
+
 void MainWidget::loadConfig() throw(InvalidFile)
 {
 	QFile configFile(".config");
@@ -142,6 +153,7 @@ MainWidget::MainWidget(QWidget* parent) : QWidget(parent)
 	} catch(InvalidFile) { database = NULL; }
 }
 
+
 void MainWidget::populateList(unsigned short int listNumber,
 							  Category<PhoneLink> category)
 {
@@ -173,16 +185,8 @@ void MainWidget::showFile(PhoneLink file)
 	cell2Edit->setText(QString("%1").arg(file.cell2));
 }
 
-void MainWidget::selectionChanged()
+unsigned short MainWidget::getChangedListNumber()
 {
-	if(!database)
-		return;
-
-	// zajistim, aby volani metody clean na listy v tele teto metody
-	// nevolalo opet tuto obsluhu
-	removeConnections();
-
-	// zjistim, ve kterem listu se zmenil vyber
 	unsigned short changedListNumber;
 	for(changedListNumber = 0; changedListNumber < listsNumber;
 		changedListNumber++)
@@ -196,37 +200,64 @@ void MainWidget::selectionChanged()
 	if(lists[changedListNumber].currentRow() == -1)
 		changedListNumber--;
 
-	// index nove vybraneho radku
-	int changedRow = lists[changedListNumber].currentRow();
+	return changedListNumber;
+}
 
-	// aktualizuji posledni ulozeny vyber
-	lastSelection[changedListNumber] = changedRow;
+void MainWidget::selectionChanged()
+{
+	if(!database)
+		return;
 
-	// vymazu vsechny listy vpravo od prave zmeneneho
-	for(int i = changedListNumber + 1; i < listsNumber; i++)
+	// zajistim, aby volani metody clean na listy v tele teto metody
+	// nevolalo opet tuto obsluhu
+	removeConnections();
+
+	// zjistim, ve kterem listu se zmenil vyber
+	unsigned short changedListNumber = getChangedListNumber();
+
+	// ulozim si indexy vybranych radku a pritom listy vymazu
+	int selection[listsNumber];
+	for(int i = 0; i < listsNumber; i++)
 	{
-		lastSelection[i] = -1;
+		selection[i] = lists[i].currentRow();
 		lists[i].clear();
 	}
 
-	// najdu kategorii, ktera je v prave zmenenem listu zobrazena
-	Category<PhoneLink>& current = *database->root();
+	{
+		// prochazim listy zleva
+		// pritom prochazim hierarchii linek
+		Category<PhoneLink>& current = *database->root();
+		populateList(0, current);
+		lists[0].setCurrentRow(selection[0]);
+		int i = 0;
+		while(selection[i] != -1 && i != changedListNumber + 1)
+		{
+			lists[i].setCurrentRow(selection[i]);
+			// pokud jsem vybral kategorii
+			if(selection[i] < current.subCategories().count())
+			{
+				// vlezu do podkatetegorie
+				current = current.subCategories()[selection[i]];
+				// zobrazim ji v listu o 1 vedle
+				populateList(i + 1, current);
+				// a pokracuju o list doprava
+				i++;
+			}
+			// pokud jsem vybral linku
+			else
+			{
+				// zobrazim ji
+				showFile(current.dataFiles()[selection[i]
+											 - current.subCategories().count()]);
+				// a prochazeni ukoncim
+				break;
+			}
+		}
+	}
 
-	for(int i = 0; i < changedListNumber; i++)
-		current = current.subCategories()[lists[i].currentRow()];
-
-	// extrahuju jeji podkategorie a datove polozky
-	QList<Category<PhoneLink> > categories = current.subCategories();
-	QList<PhoneLink> files = current.dataFiles();
-
-	// pokud byla vybrana podkategorie
-	if(changedRow < categories.count())
-		// zobrazim jeji obsah v dalsim listu
-		populateList(changedListNumber + 1,
-					 current.subCategories()[changedRow]);
-	else
-		// jinak zobrazim vybranou datovou polozku
-		showFile(files[changedRow - categories.size()]);
+	// aktualizuju lastSelection
+	for(int i = 0; i < listsNumber; i++)
+		lastSelection[i] = selection[i];
 
 	initializeConnections();
 }
@@ -304,8 +335,9 @@ void MainWidget::viewPhoneList()
 	if(database)
 	{
 		PhoneListWindow* phoneListWindow = new PhoneListWindow(database);
-
+		phoneListWindow->setWindowModality(Qt::ApplicationModal);
 		phoneListWindow->show();
+		resetLists();
 	}
 	else
 		QMessageBox::warning(this, "Nekritická chyba",

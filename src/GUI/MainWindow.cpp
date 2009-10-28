@@ -20,6 +20,18 @@ void MainWindow::createActions()
 	QObject::connect(openAction, SIGNAL(triggered()),
 					 mainWidget, SLOT(openDatabase()));
 
+	saveAction = new QAction(QIcon(":/images/filesave.svg"),
+							 tr("&Uložit seznam"), this);
+	saveAction->setShortcut(QKeySequence::Save);
+	QObject::connect(saveAction, SIGNAL(triggered()),
+					 mainWidget, SLOT(saveDatabase()));
+
+	saveAsAction = new QAction(QIcon(":/images/filesaveas.svg"),
+							   tr("&Uložit seznam jako..."), this);
+	saveAsAction->setShortcut(QKeySequence::SaveAs);
+	QObject::connect(saveAsAction, SIGNAL(triggered()),
+					 mainWidget, SLOT(saveDatabaseAs()));
+
 	findAction = new QAction(tr("&Vyhledat položku..."), this);
 	findAction->setIcon(QIcon(":/images/search.svg"));
 	findAction->setShortcut(QKeySequence::Find);
@@ -56,6 +68,10 @@ void MainWindow::createMenus()
 {
 	fileMenu = menuBar()->addMenu(tr("&Soubor"));
 	fileMenu->addAction(openAction);
+#ifdef ADMIN
+	fileMenu->addAction(saveAction);
+	fileMenu->addAction(saveAsAction);
+#endif // ADMIN
 	fileMenu->addAction(exportAction);
 	editMenu = menuBar()->addMenu(tr("&Upravit"));
 	editMenu->addAction(findAction);
@@ -70,6 +86,10 @@ void MainWindow::createToolBars()
 {
 	mainToolBar = addToolBar(tr("&Soubor"));
 	mainToolBar->addAction(openAction);
+#ifdef ADMIN
+	mainToolBar->addAction(saveAction);
+	mainToolBar->addAction(saveAsAction);
+#endif // ADMIN
 	mainToolBar->addAction(findAction);
 	mainToolBar->addAction(exportAction);
 	mainToolBar->addAction(settingsAction);

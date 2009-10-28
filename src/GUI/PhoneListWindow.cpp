@@ -3,7 +3,9 @@
 
 void PhoneListWindow::addFile()
 {
-
+	// zobraz prazdny dialog pro editaci linky
+	// dialog linku vrati, uloz ji do db
+	fillTable();
 }
 
 void PhoneListWindow::deleteFile(int index)
@@ -19,7 +21,12 @@ void PhoneListWindow::deleteFile()
 
 void PhoneListWindow::editFile(int index)
 {
-
+	// (declare (ignore index))
+	index = 0;
+	// zobraz dialog pro editaci linky
+	// dialog vrati upravenou linku
+	// uloz ji do databaze
+	fillTable();
 }
 
 void PhoneListWindow::editFile()
@@ -83,7 +90,7 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 	createActions();
 	createMenus();
 	createToolBars();
-#endif ADMIN
+#endif // ADMIN
 }
 
 void PhoneListWindow::fillTable()

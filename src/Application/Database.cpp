@@ -51,6 +51,41 @@ void PhoneDatabase::loadDatabase(QString path)
 	}
 }
 
+void PhoneDatabase::saveFile(QTextStream& stream, QString path, PhoneLink& file)
+{
+	stream << path << separator
+			<< file.department << separator
+			<< file.name << separator
+			<< file.phone1 << separator
+			<< file.phone2 << separator
+			<< file.cell1 << separator
+			<< file.cell2 << separator << endl;
+}
+
+void PhoneDatabase::saveCategory(QTextStream& stream, QString path,
+								 PhoneCategory& category)
+{
+	for(int i = 0; i < category.subCategories().count(); i++)
+		saveCategory(stream, path + "/" + category.name(),
+					 category.subCategories()[i]);
+
+	for(int i = 0; i < category.dataFiles().count(); i++)
+		saveFile(stream, path + "/" + category.name(),
+				 category.dataFiles()[i]);
+}
+
+void PhoneDatabase::saveDatabase(QString path)
+{
+	QFile dataFile(path);
+	if(!dataFile.open(QFile::WriteOnly | QFile::Text))
+		throw InvalidFile(QString("Can't open file %1").arg(path));
+
+	QTextStream dataStream(&dataFile);
+	saveCategory(dataStream, "/", *root());
+	dataStream.flush();
+	dataFile.close();
+}
+
 QList<PhoneLink>& PhoneDatabase::
 		findDataFiles(QString namePart,
 					  Category<PhoneLink>& startCategory)
@@ -80,6 +115,7 @@ void PhoneDatabase::insertDataFile(PhoneLink& data, QString path,
 throw(ObjectNotFound, InvalidArgument)
 {
 	CategoryTree<PhoneLink>::insertDataFile(data, path, createThePath);
+	_phoneList.removeAll(data);
 	_phoneList.append(data);
 }
 

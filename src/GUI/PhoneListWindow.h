@@ -1,8 +1,6 @@
 #ifndef PHONELISTDIALOG_H
 #define PHONELISTDIALOG_H
 
-//#define ADMIN
-
 #include <QtGui/QMainWindow>
 #include <QtGui/QTableWidget>
 #include <QtGui/QMenuBar>

@@ -22,6 +22,8 @@ class MainWindow : public QMainWindow
 	MainWidget* mainWidget;
 
 	QAction* openAction;
+	QAction* saveAction;
+	QAction* saveAsAction;
 	QAction* exportAction;
 	QAction* findAction;
 	QAction* settingsAction;

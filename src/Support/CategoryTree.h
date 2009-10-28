@@ -118,7 +118,7 @@ template<class T>
 		throw(ObjectNotFound, InvalidArgument)
 {
 	Category<T>& category = createThePath ? createPath(path) : getDirectory(path);
-	category.addDataFile(data);
+	category.addDataFile(data, false);
 }
 
 template<class T>

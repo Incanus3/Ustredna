@@ -1,7 +1,6 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-//#include <QtGui/QWidget>
 #include <QtGui/QListWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
@@ -39,10 +38,10 @@ class MainWidget : public QWidget
 	void initializeLayouts();
 	void initializeConnections();
 
+	void resetLists();
 	void removeConnections();
-
+	unsigned short getChangedListNumber();
 	void loadConfig() throw (InvalidFile);
-
 	void populateList(unsigned short int listNumber,
 					  Category<PhoneLink> category);
 	void showFile(PhoneLink file);
@@ -62,7 +61,6 @@ class MainWidget : public QWidget
 	QLineEdit* cell2Edit;
 
 	PhoneDatabase* database;
-
 	int* lastSelection;
 
 };

@@ -10,5 +10,7 @@
         <file>images/filenew.svg</file>
         <file>images/filedel.svg</file>
         <file>images/fileedit.svg</file>
+        <file>images/filesave.svg</file>
+        <file>images/filesaveas.svg</file>
     </qresource>
 </RCC>

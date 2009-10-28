@@ -4,6 +4,8 @@
 #include "CategoryTree.h"
 #include "PhoneLink.h"
 
+#define ADMIN
+
 typedef Category<PhoneLink> PhoneCategory;
 
 class PhoneDatabase : public CategoryTree<PhoneLink>
@@ -11,7 +13,11 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 	void loadDatabase(QString path)
 			throw(InvalidFile);
 
+	QList<PhoneLink> _phoneList;
 	static const QString separator;
+
+	void saveCategory(QTextStream& stream, QString path, PhoneCategory& category);
+	void saveFile(QTextStream& stream, QString path, PhoneLink& file);
 
 		public:
 	PhoneDatabase(QString path, QString name = "Nemocnice") throw(InvalidFile);
@@ -31,8 +37,8 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 	void toHTML(PhoneCategory& cat, QTextStream& htmlStream, short int depth = 0);
 	void toHTML(QTextStream& htmlStream);
 	void printToHTML(QString path);
-
-	QList<PhoneLink> _phoneList;
+	
+	void saveDatabase(QString path);
 };
 
 #endif // DATABASE_H
