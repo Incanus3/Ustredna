@@ -53,13 +53,14 @@ void PhoneDatabase::loadDatabase(QString path)
 
 void PhoneDatabase::saveFile(QTextStream& stream, QString path, PhoneLink& file)
 {
-	stream << path << separator
-			<< file.department << separator
-			<< file.name << separator
+	QString quotes = "\"";
+	stream << quotes << path << quotes << separator
+			<< quotes << file.department << quotes << separator
+			<< quotes << file.name << quotes << separator
 			<< file.phone1 << separator
 			<< file.phone2 << separator
 			<< file.cell1 << separator
-			<< file.cell2 << separator << endl;
+			<< file.cell2 << endl;
 }
 
 void PhoneDatabase::saveCategory(QTextStream& stream, QString path,
@@ -81,7 +82,7 @@ void PhoneDatabase::saveDatabase(QString path)
 		throw InvalidFile(QString("Can't open file %1").arg(path));
 
 	QTextStream dataStream(&dataFile);
-	saveCategory(dataStream, "/", *root());
+	saveCategory(dataStream, "", *root());
 	dataStream.flush();
 	dataFile.close();
 }

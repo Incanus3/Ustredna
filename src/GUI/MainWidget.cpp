@@ -112,6 +112,16 @@ void MainWidget::resetLists()
 	selectionChanged();
 }
 
+void MainWidget::clearTextBoxes()
+{
+	departmentEdit->clear();
+	nameEdit->clear();
+	phone1Edit->clear();
+	phone2Edit->clear();
+	cell1Edit->clear();
+	cell2Edit->clear();
+}
+
 void MainWidget::loadConfig() throw(InvalidFile)
 {
 	QFile configFile(".config");
@@ -284,15 +294,33 @@ void MainWidget::openDatabase()
 		return;
 	}
 
+	databasePath = path;
+
 	if(dbPtr)
 		delete dbPtr;
 
-	for(int i = 0; i < listsNumber; i++)
-		lists[i].clear();
+	resetLists();
+	clearTextBoxes();
 
-	initializeConnections();
+	// resetLists() po vycisteni listu vola selectionChanged(), ta vyplni
+	// prvni list a zavola initializeConnections(), neni tedy treba volat
+	//initializeConnections();
+}
 
-	populateList(0, *database->root());
+void MainWidget::saveDatabase()
+{
+	database->saveDatabase(databasePath);
+}
+
+void MainWidget::saveDatabaseAs()
+{
+	QString path =
+			QFileDialog::
+			getOpenFileName(this,
+							tr("Uložit soubor se seznamem"), ".",
+							tr("Phone Database Files (*.phd)"));
+
+	database->saveDatabase(path);
 }
 
 void MainWidget::findFile()

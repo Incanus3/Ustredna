@@ -20,7 +20,7 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 	void saveFile(QTextStream& stream, QString path, PhoneLink& file);
 
 		public:
-	PhoneDatabase(QString path, QString name = "Nemocnice") throw(InvalidFile);
+	PhoneDatabase(QString path, QString name = "") throw(InvalidFile);
 
 	QList<PhoneLink>& phoneList() const;
 

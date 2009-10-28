@@ -18,6 +18,8 @@ class MainWidget : public QWidget
 
 		public slots:
 	void openDatabase();
+	void saveDatabase();
+	void saveDatabaseAs();
 	void findFile();
 	void editSettings();
 	void exportDatabase();
@@ -39,6 +41,7 @@ class MainWidget : public QWidget
 	void initializeConnections();
 
 	void resetLists();
+	void clearTextBoxes();
 	void removeConnections();
 	unsigned short getChangedListNumber();
 	void loadConfig() throw (InvalidFile);

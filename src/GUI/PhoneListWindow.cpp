@@ -96,6 +96,7 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 void PhoneListWindow::fillTable()
 {
 	phoneTable->clear();
+	phoneTable->setRowCount(0);
 
 	PhoneLink* currentLink;
 	for (int i = 0; i < db->phoneList().size(); i++)
