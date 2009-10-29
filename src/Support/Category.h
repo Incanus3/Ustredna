@@ -171,8 +171,11 @@ template<class T>
 		void Category<T>::replaceDataFile(T oldData, T newData)
 {
 	int oldFilePosition = _dataFiles.indexOf(oldData);
-	_dataFiles.removeAll(oldData);
-	_dataFiles.insert(oldFilePosition, newData);
+	if(oldFilePosition != -1)
+	{
+		_dataFiles.removeAll(oldData);
+		_dataFiles.insert(oldFilePosition, newData);
+	}
 }
 
 template<class T>

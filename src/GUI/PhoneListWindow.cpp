@@ -79,15 +79,6 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 	phoneTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	fillTable();
 
-	QStringList headers;
-	headers.append(QString(tr("Oddělení")));
-	headers.append(QString(tr("Jméno")));
-	headers.append(QString(tr("Linka1")));
-	headers.append(QString(tr("Linka2")));
-	headers.append(QString(tr("Ručka1")));
-	headers.append(QString(tr("Ručka2")));
-	phoneTable->setHorizontalHeaderLabels(headers);
-
 	setCentralWidget(phoneTable);
 
 #ifdef ADMIN
@@ -97,10 +88,25 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 #endif // ADMIN
 }
 
-void PhoneListWindow::fillTable()
+void PhoneListWindow::clearTable()
 {
 	phoneTable->clear();
 	phoneTable->setRowCount(0);
+
+	QStringList headers;
+	headers << tr("Oddělení")
+			<< tr("Jméno")
+			<< tr("Linka1")
+			<< tr("Linka2")
+			<< tr("Ručka1")
+			<< tr("Ručka1");
+
+	phoneTable->setHorizontalHeaderLabels(headers);
+}
+
+void PhoneListWindow::fillTable()
+{
+	clearTable();
 
 	PhoneLink* currentLink;
 	for (int i = 0; i < db->phoneList().size(); i++)

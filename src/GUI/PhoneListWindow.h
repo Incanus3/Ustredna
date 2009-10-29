@@ -27,6 +27,7 @@ class PhoneListWindow : public QMainWindow
 	void createActions();
 	void createMenus();
 	void createToolBars();
+	void clearTable();
 
 	QTableWidget* phoneTable;
 

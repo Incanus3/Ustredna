@@ -129,9 +129,12 @@ void PhoneDatabase::removeDataFile(PhoneLink& data)
 void PhoneDatabase::replaceDataFile(PhoneLink &oldFile, PhoneLink newFile)
 {
 	int oldFilePosition = _phoneList.indexOf(oldFile);
-	_phoneList.removeAll(oldFile);
-	_phoneList.insert(oldFilePosition, newFile);
-	_root->replaceDataFileRecursively(oldFile, newFile);
+	if(oldFilePosition != -1)
+	{
+		_phoneList.removeAll(oldFile);
+		_phoneList.insert(oldFilePosition, newFile);
+		_root->replaceDataFileRecursively(oldFile, newFile);
+	}
 }
 
 void PhoneDatabase::toHTML(PhoneCategory& cat, QTextStream& htmlStream,
