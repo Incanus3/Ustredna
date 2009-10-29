@@ -126,6 +126,14 @@ void PhoneDatabase::removeDataFile(PhoneLink& data)
 	_phoneList.removeAll(data);
 }
 
+void PhoneDatabase::replaceDataFile(PhoneLink &oldFile, PhoneLink newFile)
+{
+	int oldFilePosition = _phoneList.indexOf(oldFile);
+	_phoneList.removeAll(oldFile);
+	_phoneList.insert(oldFilePosition, newFile);
+	_root->replaceDataFileRecursively(oldFile, newFile);
+}
+
 void PhoneDatabase::toHTML(PhoneCategory& cat, QTextStream& htmlStream,
 						   short int depth)
 {

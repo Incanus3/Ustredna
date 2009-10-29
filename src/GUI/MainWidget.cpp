@@ -316,7 +316,7 @@ void MainWidget::saveDatabaseAs()
 {
 	QString path =
 			QFileDialog::
-			getOpenFileName(this,
+			getSaveFileName(this,
 							tr("Uložit soubor se seznamem"), ".",
 							tr("Phone Database Files (*.phd)"));
 

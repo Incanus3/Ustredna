@@ -7,6 +7,7 @@
 template<class T>
 		class CategoryTree
 {
+		protected:
 	Category<T>* _root;
 
 	Category<T>& createPath(QString path);

@@ -22,8 +22,9 @@ HEADERS += Application/Database.h \
     Support/CategoryTree.h \
     Support/Cout.h \
     Support/Exceptions.h \
-	GUI/SettingsDialog.h \
-    GUI/PhoneListWindow.h
+    GUI/SettingsDialog.h \
+    GUI/PhoneListWindow.h \
+    GUI/FileEditDialog.h
 SOURCES += main.cpp \
     Application/Database.cpp \
     Application/PhoneLink.cpp \
@@ -31,6 +32,7 @@ SOURCES += main.cpp \
     GUI/MainWidget.cpp \
     GUI/MainWindow.cpp \
     Support/Cout.cpp \
-	GUI/SettingsDialog.cpp \
-    GUI/PhoneListWindow.cpp
+    GUI/SettingsDialog.cpp \
+    GUI/PhoneListWindow.cpp \
+    GUI/FileEditDialog.cpp
 RESOURCES += GUI/icons.qrc

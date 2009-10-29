@@ -1,5 +1,6 @@
-#include "PhoneListWindow.h"
 #include <QtGui/QHBoxLayout>
+#include "PhoneListWindow.h"
+#include "FileEditDialog.h"
 
 void PhoneListWindow::addFile()
 {
@@ -21,11 +22,12 @@ void PhoneListWindow::deleteFile()
 
 void PhoneListWindow::editFile(int index)
 {
-	// (declare (ignore index))
-	index = 0;
-	// zobraz dialog pro editaci linky
-	// dialog vrati upravenou linku
-	// uloz ji do databaze
+	PhoneLink fileToEdit = db->phoneList()[index];
+	FileEditDialog* editDialog = new FileEditDialog(fileToEdit);
+	editDialog->exec();
+
+	db->replaceDataFile(db->phoneList()[index], fileToEdit);
+
 	fillTable();
 }
 
@@ -68,6 +70,8 @@ void PhoneListWindow::createToolBars()
 PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 		QMainWindow(parent), db(database)
 {
+	setWindowTitle(tr("Seznam linek"));
+
 	phoneTable = new QTableWidget(this);
 	phoneTable->setColumnCount(6);
 	phoneTable->setMinimumHeight(500);

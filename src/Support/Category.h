@@ -37,6 +37,8 @@ template<class T>
 	void removeDataFile(T data);
 	//! odstraní datový soubor i ze všech podkategorií
 	void removeDataFileRecursively(T data);
+	void replaceDataFile(T oldData, T newData);
+	void replaceDataFileRecursively(T oldData, T newData);
 
 	//! vyhledá v seznamu podkategorií kategorii cat (pomocí operátoru porovnání)
 	//! a vrátí ji
@@ -163,6 +165,23 @@ template<class T>
 	QMutableListIterator<Category<T> > subCat(_subCategories);
 	while (subCat.hasNext())
 		subCat.next().removeDataFileRecursively(data);
+}
+
+template<class T>
+		void Category<T>::replaceDataFile(T oldData, T newData)
+{
+	int oldFilePosition = _dataFiles.indexOf(oldData);
+	_dataFiles.removeAll(oldData);
+	_dataFiles.insert(oldFilePosition, newData);
+}
+
+template<class T>
+		void Category<T>::replaceDataFileRecursively(T oldData, T newData)
+{
+	replaceDataFile(oldData, newData);
+
+	for(int i = 0; i < _subCategories.count(); i++)
+		_subCategories[i].replaceDataFileRecursively(oldData, newData);
 }
 
 template<class T>

@@ -33,6 +33,7 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 			throw(ObjectNotFound, InvalidArgument);
 
 	void removeDataFile(PhoneLink& data);
+	void replaceDataFile(PhoneLink& oldFile, PhoneLink newFile);
 
 	void toHTML(PhoneCategory& cat, QTextStream& htmlStream, short int depth = 0);
 	void toHTML(QTextStream& htmlStream);
