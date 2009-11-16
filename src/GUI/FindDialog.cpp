@@ -11,8 +11,17 @@ FindDialog::FindDialog(PhoneDatabase* db, QWidget* parent) : QDialog(parent)
 	nameRadio = new QRadioButton(tr("podle jména"));
 	nameRadio->setChecked(true);
 	departmentRadio = new QRadioButton(tr("podle postu"));
-	foundList = new QListWidget;
-	foundList->setMinimumWidth(400);
+	foundList = new QTableWidget;
+	foundList->setMinimumWidth(750);
+	foundList->setColumnCount(4);
+
+	QStringList headers;
+	headers << tr("Post")
+			<< tr("Jméno")
+			<< tr("Linka")
+			<< tr("Ručka");
+
+	foundList->setHorizontalHeaderLabels(headers);
 
 	QHBoxLayout* upperLayout = new QHBoxLayout;
 	upperLayout->addWidget(findEdit);
@@ -25,7 +34,7 @@ FindDialog::FindDialog(PhoneDatabase* db, QWidget* parent) : QDialog(parent)
 
 	QVBoxLayout* mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(upperLayout);
-	//mainLayout->addLayout(middleLayout);
+	mainLayout->addLayout(middleLayout);
 	mainLayout->addWidget(foundList);
 
 	setLayout(mainLayout);
@@ -37,14 +46,25 @@ FindDialog::FindDialog(PhoneDatabase* db, QWidget* parent) : QDialog(parent)
 
 void FindDialog::findClicked()
 {
-	foundList->clear();
+	foundList->clearContents();
+	QList<PhoneLink>& found = *(new QList<PhoneLink>());
 
 	if(nameRadio->isChecked())
 	{
-		QList<PhoneLink>& found = database->findDataFiles(findEdit->text());
-
-		for(int i = 0; i < found.count(); i++)
-			foundList->addItem(QString("%1     \t%2 | %3").arg(found[i].name)
-							   .arg(found[i].phone1).arg(found[i].cell1));
+		 found = database->findDataFiles(PhoneLink("", findEdit->text()));
 	}
+	else
+	{
+		found = database->findDataFiles(findEdit->text());
+	}
+
+	foundList->setRowCount(found.count());
+	for(int i = 0; i < found.count(); i++)
+	{
+		foundList->setItem(i, 0, new QTableWidgetItem(found[i].department));
+		foundList->setItem(i, 1, new QTableWidgetItem(found[i].name));
+		foundList->setItem(i, 2, new QTableWidgetItem(QString("%1").arg(found[i].phone1)));
+		foundList->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(found[i].cell1)));
+	}
+	foundList->resizeColumnsToContents();
 }

@@ -4,8 +4,9 @@
 #include <QtGui/QDialog>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
-#include <QtGui/QListWidget>
+//#include <QtGui/QListWidget>
 #include <QtGui/QRadioButton>
+#include <QtGui/QTableWidget>
 #include <QList>
 #include "Database.h"
 
@@ -24,7 +25,7 @@ class FindDialog : public QDialog
 	QPushButton* findButton;
 	QRadioButton* nameRadio;
 	QRadioButton* departmentRadio;
-	QListWidget* foundList;
+	QTableWidget* foundList;
 
 	PhoneDatabase* database;
 };

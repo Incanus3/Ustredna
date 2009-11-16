@@ -37,7 +37,7 @@ void PhoneDatabase::loadDatabase(QString path)
 		lineNumber++;
 		line = dataStream.readLine();
 		splitLine = QString(line).remove('"').split(separator);
-		if(splitLine.size() != 7)
+		if(splitLine.size() < 7)
 			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
 							  .arg(lineNumber).arg(line).arg(path)));
 		PhoneLink* newLink = new PhoneLink(splitLine[1],
@@ -67,11 +67,11 @@ void PhoneDatabase::saveCategory(QTextStream& stream, QString path,
 								 PhoneCategory& category)
 {
 	for(int i = 0; i < category.subCategories().count(); i++)
-		saveCategory(stream, path + "/" + category.name(),
+		saveCategory(stream, path + category.name() + "/",
 					 category.subCategories()[i]);
 
 	for(int i = 0; i < category.dataFiles().count(); i++)
-		saveFile(stream, path + "/" + category.name(),
+		saveFile(stream, path + category.name() + "/",
 				 category.dataFiles()[i]);
 }
 
@@ -87,28 +87,27 @@ void PhoneDatabase::saveDatabase(QString path)
 	dataFile.close();
 }
 
-QList<PhoneLink>& PhoneDatabase::
-		findDataFiles(QString namePart,
-					  Category<PhoneLink>& startCategory)
+QList<PhoneLink>& PhoneDatabase::findDataFiles(const PhoneLink& file,
+											   const PhoneCategory& startCategory)
 {
 	QList<PhoneLink>* list = new QList<PhoneLink>;
 	QList<Category<PhoneLink> >& subCats = startCategory.subCategories();
 	QList<PhoneLink>& dtFiles = startCategory.dataFiles();
 
 	for(int i = 0; i < subCats.count(); i++)
-		list->append(findDataFiles(namePart, subCats[i]));
+		list->append(findDataFiles(file, subCats[i]));
 
 	for(int i = 0; i < dtFiles.count(); i++)
-		if(dtFiles[i].name.contains(namePart, Qt::CaseInsensitive))
+		if(dtFiles[i].name.contains(file.name, Qt::CaseInsensitive) &&
+		   dtFiles[i].department.contains(file.department, Qt::CaseInsensitive))
 			list->append(dtFiles[i]);
 
 	return *list;
 }
 
-QList<PhoneLink>& PhoneDatabase::
-		findDataFiles(QString namePart)
+QList<PhoneLink>& PhoneDatabase::findDataFiles(const PhoneLink& file)
 {
-	return findDataFiles(namePart, *root());
+	return findDataFiles(file, *root());
 }
 
 void PhoneDatabase::insertDataFile(PhoneLink& data, QString path,

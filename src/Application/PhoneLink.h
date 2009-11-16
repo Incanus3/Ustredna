@@ -24,8 +24,8 @@ struct PhoneLink
 			//! jméno
 			QString name = "",
 				unsigned short phone1 = 0,
-				unsigned short cell1 = 0,
                 unsigned short phone2 = 0,
+				unsigned short cell1 = 0,
                 unsigned short cell2 = 0);
 
 	//! operátor implicitního přetypování na QString

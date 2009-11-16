@@ -75,6 +75,16 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 	phoneTable = new QTableWidget(this);
 	phoneTable->setColumnCount(6);
 	phoneTable->setMinimumHeight(500);
+
+	QStringList headers;
+	headers << tr("Post")
+			<< tr("Jméno")
+			<< tr("Linka1")
+			<< tr("Linka2")
+			<< tr("Ručka1")
+			<< tr("Ručka2");
+
+	phoneTable->setHorizontalHeaderLabels(headers);
 	// zaruci needitovatelnost bunek
 	phoneTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	fillTable();
@@ -90,18 +100,8 @@ PhoneListWindow::PhoneListWindow(PhoneDatabase* database, QWidget* parent) :
 
 void PhoneListWindow::clearTable()
 {
-	phoneTable->clear();
+	phoneTable->clearContents();
 	phoneTable->setRowCount(0);
-
-	QStringList headers;
-	headers << tr("Oddělení")
-			<< tr("Jméno")
-			<< tr("Linka1")
-			<< tr("Linka2")
-			<< tr("Ručka1")
-			<< tr("Ručka1");
-
-	phoneTable->setHorizontalHeaderLabels(headers);
 }
 
 void PhoneListWindow::fillTable()

@@ -24,9 +24,9 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 
 	QList<PhoneLink>& phoneList() const;
 
-	QList<PhoneLink>& findDataFiles(QString namePart);
-	QList<PhoneLink>& findDataFiles(QString namePart,
-									PhoneCategory& startCategory);
+	QList<PhoneLink>& findDataFiles(const PhoneLink& file,
+									const PhoneCategory& startCategory);
+	QList<PhoneLink>& findDataFiles(const PhoneLink& file);
 
 	void insertDataFile(PhoneLink& data, QString path = "/",
 						bool createThePath = false)
