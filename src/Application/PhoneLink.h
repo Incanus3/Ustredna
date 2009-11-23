@@ -18,14 +18,13 @@ struct PhoneLink
 	unsigned short phone1, phone2, cell1, cell2;
 
 	//! konstruktor struktury
-	PhoneLink(
-			//! název oddělení
-			QString department,
-			//! jméno
-			QString name = "",
-				unsigned short phone1 = 0,
+        PhoneLink(//! název oddělení
+                QString department,
+                //! jméno
+                QString name = "",
+                unsigned short phone1 = 0,
                 unsigned short phone2 = 0,
-				unsigned short cell1 = 0,
+                unsigned short cell1 = 0,
                 unsigned short cell2 = 0);
 
 	//! operátor implicitního přetypování na QString

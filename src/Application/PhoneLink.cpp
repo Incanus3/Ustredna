@@ -2,11 +2,11 @@
 
 PhoneLink::PhoneLink(
 		QString department,
-		QString name,
-					 unsigned short phone1,
-					 unsigned short cell1,
-					 unsigned short phone2,
-					 unsigned short cell2)
+                QString name,
+                unsigned short phone1,
+                unsigned short phone2,
+                unsigned short cell1,
+                unsigned short cell2)
 {
 	this->department = department;
 	this->name = name;

@@ -40,13 +40,12 @@ void PhoneDatabase::loadDatabase(QString path)
 		if(splitLine.size() < 7)
 			throw(InvalidFile(QString("Invalid line %1: %2 in file %3")
 							  .arg(lineNumber).arg(line).arg(path)));
-		PhoneLink* newLink = new PhoneLink(splitLine[1],
-										   splitLine[2],
-										   splitLine[3].toUShort(),
-										   splitLine[4].toUShort(),
-										   splitLine[5].toUShort(),
-										   splitLine[6].toUShort());
-//		_phoneList.append(*newLink);
+                PhoneLink* newLink = new PhoneLink(splitLine[1],
+                                                   splitLine[2],
+                                                   splitLine[3].toUShort(),
+                                                   splitLine[4].toUShort(),
+                                                   splitLine[5].toUShort(),
+                                                   splitLine[6].toUShort());
 		insertDataFile(*newLink, splitLine[0], true);
 	}
 }
