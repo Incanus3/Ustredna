@@ -1,11 +1,13 @@
 #ifndef PHONELISTDIALOG_H
 #define PHONELISTDIALOG_H
 
+#include <QVector>
 #include <QtGui/QMainWindow>
 #include <QtGui/QTableWidget>
 #include <QtGui/QMenuBar>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
+#include "Exceptions.h"
 #include "Database.h"
 
 class PhoneListWindow : public QMainWindow
@@ -20,6 +22,8 @@ class PhoneListWindow : public QMainWindow
 	void addFile();
 	void editFile(int index);
 	void editFile();
+        void addToTree(int index);
+        void addToTree();
 	void deleteFile(int index);
 	void deleteFile();
 
@@ -29,6 +33,9 @@ class PhoneListWindow : public QMainWindow
 	void createToolBars();
 	void clearTable();
 
+	QVector<unsigned short int> toDigitArray(QString number)
+		throw(InvalidArgument);
+
 	QTableWidget* phoneTable;
 
 	QMenu* listMenu;
@@ -36,9 +43,11 @@ class PhoneListWindow : public QMainWindow
 
 	QAction* addAction;
 	QAction* editAction;
+        QAction* addToTreeAction;
 	QAction* delAction;
 
 	PhoneDatabase* db;
 };
+
 
 #endif // PHONELISTDIALOG_H

@@ -25,12 +25,14 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 	QList<PhoneLink>& phoneList() const;
 
 	QList<PhoneLink>& findDataFiles(const PhoneLink& file,
-									const PhoneCategory& startCategory);
+                                        const PhoneCategory& startCategory);
 	QList<PhoneLink>& findDataFiles(const PhoneLink& file);
 
-	void insertDataFile(PhoneLink& data, QString path = "/",
-						bool createThePath = false)
-			throw(ObjectNotFound, InvalidArgument);
+        void insertDataFile(PhoneLink& data, QString path = "/",
+                            bool createThePath = false)
+        throw(ObjectNotFound, InvalidArgument);
+	void insertDataFile(PhoneLink& data, QVector<unsigned short int> path)
+		throw(ObjectNotFound);
 
 	void removeDataFile(PhoneLink& data);
 	void replaceDataFile(PhoneLink& oldFile, PhoneLink newFile);

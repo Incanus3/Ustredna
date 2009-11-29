@@ -1,4 +1,5 @@
 #include <QtGui/QHBoxLayout>
+#include <QInputDialog>
 #include "PhoneListWindow.h"
 #include "FileEditDialog.h"
 
@@ -7,6 +8,37 @@ void PhoneListWindow::addFile()
 	// zobraz prazdny dialog pro editaci linky
 	// dialog linku vrati, uloz ji do db
 	fillTable();
+}
+
+void PhoneListWindow::editFile(int index)
+{
+        PhoneLink fileToEdit = db->phoneList()[index];
+        FileEditDialog* editDialog = new FileEditDialog(fileToEdit);
+        editDialog->exec();
+
+        db->replaceDataFile(db->phoneList()[index], fileToEdit);
+
+        fillTable();
+}
+
+void PhoneListWindow::editFile()
+{
+        editFile(phoneTable->currentRow());
+}
+
+void PhoneListWindow::addToTree(int index)
+{
+    bool ok;
+    QString position = QInputDialog::getText(this, tr("Zařazení položky do stromu"),
+                                        tr("Zadejte požadovanou pozici ve stromu"),
+					QLineEdit::Normal, "1111", &ok);
+    // vlozit prvek do stromu
+    db->insertDataFile(db->phoneList()[index], toDigitArray(position));
+}
+
+void PhoneListWindow::addToTree()
+{
+    addToTree(phoneTable->currentRow());
 }
 
 void PhoneListWindow::deleteFile(int index)
@@ -20,35 +52,23 @@ void PhoneListWindow::deleteFile()
 	deleteFile(phoneTable->currentRow());
 }
 
-void PhoneListWindow::editFile(int index)
-{
-	PhoneLink fileToEdit = db->phoneList()[index];
-	FileEditDialog* editDialog = new FileEditDialog(fileToEdit);
-	editDialog->exec();
-
-	db->replaceDataFile(db->phoneList()[index], fileToEdit);
-
-	fillTable();
-}
-
-void PhoneListWindow::editFile()
-{
-	editFile(phoneTable->currentRow());
-}
-
 void PhoneListWindow::createActions()
 {
-	addAction = new QAction(QIcon(":/images/filenew.svg"),
-							tr("Přidat položku"), this);
-	QObject::connect(addAction, SIGNAL(triggered()), this, SLOT(addFile()));
+    addAction = new QAction(QIcon(":/images/filenew.svg"),
+                            tr("Přidat položku"), this);
+    QObject::connect(addAction, SIGNAL(triggered()), this, SLOT(addFile()));
 
-	editAction = new QAction(QIcon(":/images/fileedit.svg"),
-							 tr("Editovat položku"), this);
-	QObject::connect(editAction, SIGNAL(triggered()), this, SLOT(editFile()));
+    editAction = new QAction(QIcon(":/images/fileedit.svg"),
+                             tr("Editovat položku"), this);
+    QObject::connect(editAction, SIGNAL(triggered()), this, SLOT(editFile()));
 
-	delAction = new QAction(QIcon(":/images/filedel.svg"),
-							tr("Odstranit položku"), this);
-	QObject::connect(delAction, SIGNAL(triggered()), this, SLOT(deleteFile()));
+    addToTreeAction = new QAction(QIcon(":/images/addtotree.svg"),
+                                  tr("Umístit do stromu..."), this);
+    QObject::connect(addToTreeAction, SIGNAL(triggered()), this, SLOT(addToTree()));
+
+    delAction = new QAction(QIcon(":/images/filedel.svg"),
+                            tr("Odstranit položku"), this);
+    QObject::connect(delAction, SIGNAL(triggered()), this, SLOT(deleteFile()));
 }
 
 void PhoneListWindow::createMenus()
@@ -56,6 +76,7 @@ void PhoneListWindow::createMenus()
 	listMenu = menuBar()->addMenu(tr("&Seznam"));
 	listMenu->addAction(addAction);
 	listMenu->addAction(editAction);
+        listMenu->addAction(addToTreeAction);
 	listMenu->addAction(delAction);
 }
 
@@ -64,6 +85,7 @@ void PhoneListWindow::createToolBars()
 	listToolbar = addToolBar(tr("&Seznam"));
 	listToolbar->addAction(addAction);
 	listToolbar->addAction(editAction);
+        listToolbar->addAction(addToTreeAction);
 	listToolbar->addAction(delAction);
 }
 
@@ -134,4 +156,20 @@ void PhoneListWindow::fillTable()
 		width += phoneTable->columnWidth(i);
 	}
 	phoneTable->setMinimumWidth(width + 50);
+}
+
+// bere v QStringu ulozene cislo, vraci pole jeho cifer, SNIZENYCH O 1,
+// ve vstupnim stringu se nesmi vyskytovat nenumerice znaky ani 0
+QVector<unsigned short int> PhoneListWindow::toDigitArray(QString number)
+	throw(InvalidArgument)
+{
+    QVector<unsigned short int>* vector = new QVector<unsigned short int>;
+    for(unsigned short int i = 0, digit; i < number.length(); i++)
+    {
+	digit = number[i].digitValue();
+	if(digit < 1) throw InvalidArgument(
+		QString("%1 is not valid directory index").arg(digit));
+	vector->append(digit - 1);
+    }
+    return *vector;
 }
