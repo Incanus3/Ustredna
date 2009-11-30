@@ -34,6 +34,8 @@ class PhoneDatabase : public CategoryTree<PhoneLink>
 	void insertDataFile(PhoneLink& data, QVector<unsigned short int> path)
 		throw(ObjectNotFound);
 
+	void addDataFile(PhoneLink& data);
+
 	void removeDataFile(PhoneLink& data);
 	void replaceDataFile(PhoneLink& oldFile, PhoneLink newFile);
 

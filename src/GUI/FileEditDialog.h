@@ -12,7 +12,7 @@ class FileEditDialog : public QDialog
 	Q_OBJECT
 
 public:
-	FileEditDialog(PhoneLink& phoneLink);
+	FileEditDialog(PhoneLink* phoneLink);
 
 private slots:
 	void okClicked();

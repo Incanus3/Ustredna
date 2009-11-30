@@ -214,7 +214,7 @@ template<class T>
     if(index >= (unsigned short int) _subCategories.size())
 	 throw(ObjectNotFound(QString("%1 is not valid subdirectory index,\n"
 					 "%2 has only %3 subcategories")
-				 .arg(index).arg(name()).arg(subCategories().size())));
+				 .arg(index + 1).arg(name()).arg(subCategories().size())));
     return _subCategories[index];
 }
 

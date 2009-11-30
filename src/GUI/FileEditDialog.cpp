@@ -4,9 +4,9 @@
 const short int FileEditDialog::textEditMinWidth = 240;
 const short int FileEditDialog::numberEditWidth = 40;
 
-FileEditDialog::FileEditDialog(PhoneLink& phoneLink)
+FileEditDialog::FileEditDialog(PhoneLink* phoneLink)
 {
-	editedLink = &phoneLink;
+	editedLink = phoneLink;
 
 	setWindowTitle(tr("Editace linky"));
 	initializeWidgets();

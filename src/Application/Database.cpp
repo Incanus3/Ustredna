@@ -109,13 +109,18 @@ QList<PhoneLink>& PhoneDatabase::findDataFiles(const PhoneLink& file)
 	return findDataFiles(file, *root());
 }
 
+void PhoneDatabase::addDataFile(PhoneLink& data)
+{
+    _phoneList.removeAll(data);
+    _phoneList.append(data);
+}
+
 void PhoneDatabase::insertDataFile(PhoneLink& data, QString path,
 				   bool createThePath)
 throw(ObjectNotFound, InvalidArgument)
 {
     CategoryTree<PhoneLink>::insertDataFile(data, path, createThePath);
-    _phoneList.removeAll(data);
-    _phoneList.append(data);
+    addDataFile(data);
 }
 
 void PhoneDatabase::insertDataFile(PhoneLink& data,
@@ -123,8 +128,7 @@ void PhoneDatabase::insertDataFile(PhoneLink& data,
 throw(ObjectNotFound)
 {
     CategoryTree<PhoneLink>::insertDataFile(data, path);
-    _phoneList.removeAll(data);
-    _phoneList.append(data);
+    addDataFile(data);
 }
 
 void PhoneDatabase::removeDataFile(PhoneLink& data)
